@@ -11,7 +11,10 @@ interface loginData {
 }
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async register(registerDto: AuthRegisterDto): Promise<User> {
     const { name, email, password } = registerDto;
@@ -27,9 +30,9 @@ export class AuthService {
       },
     });
     if (!user) {
-        throw new Error('Failed to create user');
+      throw new Error('Failed to create user');
     }
-    return user
+    return user;
   }
 
   async findUser(email: string): Promise<User | null> {
@@ -38,42 +41,38 @@ export class AuthService {
 
   async login(authLoginDto: AuthLoginDto) {
     try {
-        const { email, password } = authLoginDto;
-        const checkEmail = await this.prisma.user.findFirst({
-            where: {
-                email
-            }
-        })
-        console.log("email check service:", checkEmail)
+      const { email, password } = authLoginDto;
+      const checkEmail = await this.prisma.user.findFirst({
+        where: {
+          email,
+        },
+      });
 
       if (!checkEmail) {
         return {
-            user: null,
-            access_token: 'Error Email / password is wrong',
-          };
+          user: null,
+          access_token: 'Error Email / password is wrong',
+        };
       }
-      console.log("password service",password);
-      
-      
+
       const passwordMatch = await bcrypt.compare(password, checkEmail.password);
       if (!passwordMatch) {
-          throw new Error('Invalid email or password');
-        }
-        console.log("hashpassword",passwordMatch);
+        throw new Error('Invalid email or password');
+      }
       const payload = {
-          id: checkEmail.id,
-          email: checkEmail.email,
-          name: checkEmail.name,
-          role: checkEmail.role
-        }
-        console.log("response",payload);
-        const token = await this.jwtService.signAsync(payload);
-        return {
-            access_token: token,
-          };
-      
+        id: checkEmail.id,
+        email: checkEmail.email,
+        name: checkEmail.name,
+        role: checkEmail.role,
+      };
+
+      const token = await this.jwtService.signAsync(payload);
+      return {
+        payload,
+        access_token: token,
+      };
     } catch (e) {
-        throw new Error(e);
+      throw new Error(e);
     }
   }
 
@@ -84,26 +83,41 @@ export class AuthService {
         where: {
           id: loginSession.id,
         },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+        },
       });
 
-      return user
+      return user;
     } catch (error) {
-      return null
+      return null;
     }
   }
 
-//   async updateUser(params: {
-//     where: Prisma.UserWhereUniqueInput;
-//     data: Prisma.UserUpdateInput;
-//   }): Promise<User> {
-//     const { where, data } = params;
-//     return this.prisma.user.update({
-//       data,
-//       where,
-//     });
+//   async logout(req: Request) {
+//     const loginSession = req['user'];
+//     loginSession.destroy();
+//     return {
+//       statusCode: HttpStatus.OK,
+//       message: 'Logout successfully',
+//     };
 //   }
 
-//   async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-//     return this.prisma.user.delete({ where });
-//   }
+  //   async updateUser(params: {
+  //     where: Prisma.UserWhereUniqueInput;
+  //     data: Prisma.UserUpdateInput;
+  //   }): Promise<User> {
+  //     const { where, data } = params;
+  //     return this.prisma.user.update({
+  //       data,
+  //       where,
+  //     });
+  //   }
+
+  //   async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
+  //     return this.prisma.user.delete({ where });
+  //   }
 }
