@@ -15,7 +15,7 @@ model User {
   email    String   @unique
   name     String?
   password String
-  role     String
+  role     UserRole @default(USER)
   posts    Post[]
   ceatedAt DateTime @default(now())
 
@@ -23,7 +23,7 @@ model User {
 }
 
 model Post {
-  id       String   @id @default(uuid())
+  id       String   @id @unique @default(uuid())
   title    String
   content  String
   author   User?    @relation(fields: [authorId], references: [id])
@@ -31,4 +31,9 @@ model Post {
   ceatedAt DateTime @default(now())
 
   @@map("posts")
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }

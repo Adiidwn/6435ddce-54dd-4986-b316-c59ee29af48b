@@ -1,9 +1,10 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthLoginDto, AuthRegisterDto } from 'src/dto/auth.dto';
 import { PrismaService } from 'src/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { Prisma, PrismaClient, User } from '@prisma/client';
+import { Request, Response } from 'express';
 
 interface loginData {
   email: string;
@@ -23,7 +24,6 @@ export class AuthService {
 
     const user = await this.prisma.user.create({
       data: {
-        role: 'user',
         name,
         email,
         password: bcryptPassword,
@@ -97,27 +97,66 @@ export class AuthService {
     }
   }
 
-//   async logout(req: Request) {
-//     const loginSession = req['user'];
-//     loginSession.destroy();
-//     return {
-//       statusCode: HttpStatus.OK,
-//       message: 'Logout successfully',
-//     };
-//   }
+  async logout(req: Request, res: Response) {
+    const loginSession = req['user'];
 
-  //   async updateUser(params: {
-  //     where: Prisma.UserWhereUniqueInput;
-  //     data: Prisma.UserUpdateInput;
-  //   }): Promise<User> {
-  //     const { where, data } = params;
-  //     return this.prisma.user.update({
-  //       data,
-  //       where,
-  //     });
-  //   }
+    // Set expiration to a past date or a very short duration (e.g., 1 second)
+    const expiration = new Date(Date.now() - 1000); // 1 second ago
 
-  //   async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-  //     return this.prisma.user.delete({ where });
-  //   }
+    // Generate a new token with the updated expiration
+    const newToken = this.jwtService.sign(
+      {
+        id: loginSession.id,
+        email: loginSession.email,
+        name: loginSession.name,
+        role: loginSession.role,
+      },
+      { expiresIn: '1s' },
+    ); // 1 second expiration
+
+    // Set the new token in the response header (optional)
+    res.header('Authorization', `Bearer ${newToken}`);
+
+    // Respond with a successful logout message
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Logout successful',
+    };
+  }
+
+  async updateUser(
+    authDto: AuthRegisterDto,
+    id: string,
+    req: Request,
+  ): Promise<User> {
+    const user = req['user'];
+    const paramId = id;
+    console.log("id", id);
+    console.log("user", user);
+    
+    
+    if (!user) {
+      throw new UnauthorizedException('unknown user');
+    }
+    const userData = await this.prisma.user.findFirst({
+      where: {
+        id: paramId,
+      },
+    });
+
+    userData.name = authDto.name;
+    userData.email = authDto.email;
+    userData.password = authDto.password;
+
+      console.log("userDataa",userData);
+      
+    return this.prisma.user.update({
+      where: { id: user.id },
+      data: userData,
+    });
+  }
+
+  async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
+    return this.prisma.user.delete({ where });
+  }
 }

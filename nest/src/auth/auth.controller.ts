@@ -3,12 +3,13 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthLoginDto, AuthRegisterDto } from 'src/dto/auth.dto';
 import { AuthGuard } from './auth.guard';
@@ -26,8 +27,6 @@ export class AuthController {
         message: 'Unauthorized',
       });
     }
-    console.log(login);
-    
     return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
       data: login,
@@ -73,6 +72,8 @@ export class AuthController {
   @Get('/profile')
   async getProfile(@Req() req: Request, @Res() res: Response) {
     try {
+      console.log("req user",req.headers['authorization'].split(" ")[1]);
+      
       const authCheck = await this.authService.authCheck(req);
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
@@ -83,6 +84,41 @@ export class AuthController {
         statusCode: HttpStatus.UNAUTHORIZED,
         message: error.message,
       });
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/logout')
+  async logout(@Req() req: Request, @Res() res: Response) {
+    try {
+      const result = await this.authService.logout(req, res);
+      return res.status(HttpStatus.OK).json(result);
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Internal Server Error',
+      });
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Post("/update/:id")
+  async updateUser(@Body() authDto: AuthRegisterDto, @Param("id") id: string, @Req() req: Request) {
+    
+    try {
+      const user = req["user"]
+    if (!user) {
+      return "Unauthorized"
+    }
+    const updateProfile = await this.authService.updateUser(
+      authDto,
+      id,
+      req
+    );
+    console.log('updateProfile controller:', updateProfile);
+    return updateProfile;
+    } catch (error) {
+      return error
     }
   }
 }
