@@ -62,7 +62,7 @@ let AuthService = class AuthService {
                 name: checkEmail.name,
                 role: checkEmail.role,
             };
-            const token = await this.jwtService.signAsync(payload);
+            const token = await this.jwtService.signAsync({ payload }, { expiresIn: '10000000h' });
             return {
                 payload,
                 access_token: token,
@@ -94,7 +94,7 @@ let AuthService = class AuthService {
     }
     async logout(req, res) {
         const loginSession = req['user'];
-        const expiration = new Date(Date.now() - 10000);
+        const expiration = new Date(Date.now() - 1000);
         const newToken = this.jwtService.sign({
             id: loginSession.id,
             email: loginSession.email,
@@ -104,6 +104,7 @@ let AuthService = class AuthService {
         res.header('Authorization', `Bearer ${newToken}`);
         return {
             statusCode: common_1.HttpStatus.OK,
+            acess_token: newToken,
             message: 'Logout successful',
         };
     }

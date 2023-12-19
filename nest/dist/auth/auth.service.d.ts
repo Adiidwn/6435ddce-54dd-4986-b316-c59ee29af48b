@@ -25,13 +25,14 @@ export declare class AuthService {
         user?: undefined;
     }>;
     authCheck(req: Request): Promise<{
-        email: string;
         name: string;
+        email: string;
         id: string;
         role: import(".prisma/client").$Enums.UserRole;
     }>;
     logout(req: Request, res: Response): Promise<{
         statusCode: HttpStatus;
+        acess_token: string;
         message: string;
     }>;
     updateUser(authDto: AuthRegisterDto, id: string, req: Request): Promise<User>;

@@ -66,7 +66,7 @@ export class AuthService {
         role: checkEmail.role,
       };
 
-      const token = await this.jwtService.signAsync(payload);
+      const token = await this.jwtService.signAsync({payload}, {expiresIn: '10000000h'},);
       return {
         payload,
         access_token: token,
@@ -101,7 +101,7 @@ export class AuthService {
     const loginSession = req['user'];
 
     // Set expiration to a past date or a very short duration (e.g., 1 second)
-    const expiration = new Date(Date.now() - 10000); // 1 second ago
+    const expiration = new Date(Date.now() - 1000); // 1 second ago
 
     // Generate a new token with the updated expiration
     const newToken = this.jwtService.sign(
@@ -120,6 +120,7 @@ export class AuthService {
     // Respond with a successful logout message
     return {
       statusCode: HttpStatus.OK,
+      acess_token: newToken,
       message: 'Logout successful',
     };
   }
