@@ -101,7 +101,7 @@ export class AuthService {
     const loginSession = req['user'];
 
     // Set expiration to a past date or a very short duration (e.g., 1 second)
-    const expiration = new Date(Date.now() - 1000); // 1 second ago
+    const expiration = new Date(Date.now() - 10000); // 1 second ago
 
     // Generate a new token with the updated expiration
     const newToken = this.jwtService.sign(

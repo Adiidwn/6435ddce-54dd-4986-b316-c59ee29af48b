@@ -94,7 +94,7 @@ let AuthService = class AuthService {
     }
     async logout(req, res) {
         const loginSession = req['user'];
-        const expiration = new Date(Date.now() - 1000);
+        const expiration = new Date(Date.now() - 10000);
         const newToken = this.jwtService.sign({
             id: loginSession.id,
             email: loginSession.email,
