@@ -25,8 +25,8 @@ export declare class AuthService {
         user?: undefined;
     }>;
     authCheck(req: Request): Promise<{
-        name: string;
         email: string;
+        name: string;
         id: string;
         role: import(".prisma/client").$Enums.UserRole;
     }>;
