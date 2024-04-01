@@ -17,6 +17,9 @@ export class AuthRegisterDto {
   @IsNotEmpty()
   password: string;
 
+  @IsNotEmpty()
+  confirmPassword: string;
+
   @IsEmail()
   email: string;
 }

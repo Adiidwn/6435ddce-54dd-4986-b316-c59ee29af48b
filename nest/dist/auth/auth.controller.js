@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const auth_dto_1 = require("../dto/auth.dto");
 const auth_guard_1 = require("./auth.guard");
+const request_dto_1 = require("../dto/request.dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -51,7 +52,7 @@ let AuthController = class AuthController {
     }
     async getProfile(req, res) {
         try {
-            console.log("req user", req.headers['authorization'].split(" ")[1]);
+            console.log('req user', req.headers['authorization'].split(' ')[1]);
             const authCheck = await this.authService.authCheck(req);
             return res.status(common_1.HttpStatus.OK).json({
                 statusCode: common_1.HttpStatus.OK,
@@ -77,13 +78,13 @@ let AuthController = class AuthController {
             });
         }
     }
-    async updateUser(authDto, id, req) {
+    async updateUser(authDto, params, req) {
         try {
-            const user = req["user"];
+            const user = req['user'];
             if (!user) {
-                return "Unauthorized";
+                return 'Unauthorized';
             }
-            const updateProfile = await this.authService.updateUser(authDto, id, req);
+            const updateProfile = await this.authService.updateUser(authDto, params, req);
             console.log('updateProfile controller:', updateProfile);
             return updateProfile;
         }
@@ -111,7 +112,7 @@ __decorate([
 ], AuthController.prototype, "register", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
-    (0, common_1.Get)('/profile'),
+    (0, common_1.Get)('/getProfile'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
@@ -129,16 +130,17 @@ __decorate([
 ], AuthController.prototype, "logout", null);
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
-    (0, common_1.Post)("/update/:id"),
+    (0, common_1.Post)('/updateProfile'),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Query)()),
     __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [auth_dto_1.AuthRegisterDto, String, Object]),
+    __metadata("design:paramtypes", [auth_dto_1.AuthRegisterDto,
+        request_dto_1.QueryParams, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "updateUser", null);
 exports.AuthController = AuthController = __decorate([
-    (0, common_1.Controller)('auths'),
+    (0, common_1.Controller)('api'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

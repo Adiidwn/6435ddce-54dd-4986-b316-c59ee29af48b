@@ -4,12 +4,13 @@ import { PrismaService } from 'src/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
 import { Request, Response } from 'express';
+import { QueryParams } from 'src/dto/request.dto';
 export declare class AuthService {
     private readonly prisma;
     private readonly jwtService;
     constructor(prisma: PrismaService, jwtService: JwtService);
     register(registerDto: AuthRegisterDto): Promise<User>;
-    findUser(email: string): Promise<User | null>;
+    findUser(email: string, params: QueryParams): Promise<User | null>;
     login(authLoginDto: AuthLoginDto): Promise<{
         user: any;
         access_token: string;
@@ -35,6 +36,6 @@ export declare class AuthService {
         acess_token: string;
         message: string;
     }>;
-    updateUser(authDto: AuthRegisterDto, id: string, req: Request): Promise<User>;
+    updateUser(updateDTO: AuthRegisterDto, params: QueryParams, req: Request): Promise<User>;
     deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User>;
 }

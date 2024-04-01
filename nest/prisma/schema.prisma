@@ -11,24 +11,29 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(uuid()) @map("_id")
-  email    String   @unique
+  id       String    @id @default(uuid()) @map("_id")
+  email    String    @unique
   name     String?
   password String
-  role     UserRole @default(USER)
-  posts    Post[]
-  ceatedAt DateTime @default(now())
+  role     UserRole  @default(USER)
+  profiles Profile[]
+  ceatedAt DateTime  @default(now())
 
   @@map("users")
 }
 
-model Post {
-  id       String   @id @default(uuid()) @map("_id")
-  title    String
-  content  String
-  author   User?    @relation(fields: [authorId], references: [id])
-  authorId String?
-  ceatedAt DateTime @default(now())
+model Profile {
+  id           String   @id @default(uuid()) @map("_id")
+  display_name String
+  gender       String
+  birthday     DateTime
+  horoscope    String
+  zodiac       String
+  height       Float
+  weight       Float
+  author       User?    @relation(fields: [authorId], references: [id])
+  authorId     String?  @unique
+  ceatedAt     DateTime @default(now())
 
   @@map("posts")
 }

@@ -21,8 +21,10 @@ let AuthService = class AuthService {
     }
     async register(registerDto) {
         const { name, email, password } = registerDto;
+        console.log('registerDto', registerDto);
         const saltRounds = 10;
         const bcryptPassword = await bcrypt.hash(password, saltRounds);
+        console.log('bcryptPassword', bcryptPassword);
         const user = await this.prisma.user.create({
             data: {
                 name,
@@ -30,12 +32,13 @@ let AuthService = class AuthService {
                 password: bcryptPassword,
             },
         });
+        console.log('user', user);
         if (!user) {
             throw new Error('Failed to create user');
         }
         return user;
     }
-    async findUser(email) {
+    async findUser(email, params) {
         return this.prisma.user.findUnique({ where: { email } });
     }
     async login(authLoginDto) {
@@ -108,23 +111,28 @@ let AuthService = class AuthService {
             message: 'Logout successful',
         };
     }
-    async updateUser(authDto, id, req) {
+    async updateUser(updateDTO, params, req) {
         const user = req['user'];
-        const paramId = id;
-        console.log("id", id);
-        console.log("user", user);
+        if (user.id !== params.user_id) {
+            throw new common_1.UnauthorizedException('unknown user');
+        }
+        const arrQuery = [];
+        if (params.user_id) {
+            arrQuery.push({
+                id: params.user_id,
+            });
+        }
         if (!user) {
             throw new common_1.UnauthorizedException('unknown user');
         }
         const userData = await this.prisma.user.findFirst({
             where: {
-                id: paramId,
+                AND: arrQuery,
             },
         });
-        userData.name = authDto.name;
-        userData.email = authDto.email;
-        userData.password = authDto.password;
-        console.log("userDataa", userData);
+        userData.name = updateDTO.name;
+        userData.email = updateDTO.email;
+        userData.password = updateDTO.password;
         return this.prisma.user.update({
             where: { id: user.id },
             data: userData,

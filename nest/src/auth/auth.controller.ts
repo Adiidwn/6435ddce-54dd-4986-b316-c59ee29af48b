@@ -14,6 +14,7 @@ import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthLoginDto, AuthRegisterDto } from 'src/dto/auth.dto';
 import { AuthGuard } from './auth.guard';
+import { QueryParams } from 'src/dto/request.dto';
 
 @Controller('api')
 export class AuthController {
@@ -103,7 +104,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Post('/updateProfile')
+  @Post('/updateUser')
   async updateUser(
     @Body() authDto: AuthRegisterDto,
     @Query() params: QueryParams,
@@ -114,9 +115,13 @@ export class AuthController {
       if (!user) {
         return 'Unauthorized';
       }
-      const updateProfile = await this.authService.updateUser(authDto, id, req);
-      console.log('updateProfile controller:', updateProfile);
-      return updateProfile;
+      const updateUser = await this.authService.updateUser(
+        authDto,
+        params,
+        req,
+      );
+      console.log('updateUser controller:', updateUser);
+      return updateUser;
     } catch (error) {
       return error;
     }
