@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -14,7 +15,7 @@ import { AuthService } from './auth.service';
 import { AuthLoginDto, AuthRegisterDto } from 'src/dto/auth.dto';
 import { AuthGuard } from './auth.guard';
 
-@Controller('auths')
+@Controller('api')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -52,28 +53,28 @@ export class AuthController {
     }
   }
 
-//   @Post('/logout')
-//   async logout(@Req() req: Request, @Res() res: Response) {
-//     try {
-//       const logout = await this.authService.logout(req);
-//       return res.status(HttpStatus.OK).json({
-//         statusCode: HttpStatus.OK,
-//         data: logout,
-//       });
-//     } catch (error) {
-//       return res.status(HttpStatus.UNAUTHORIZED).json({
-//         statusCode: HttpStatus.UNAUTHORIZED,
-//         message: error.message,
-//       });
-//     }
-//   }
+  //   @Post('/logout')
+  //   async logout(@Req() req: Request, @Res() res: Response) {
+  //     try {
+  //       const logout = await this.authService.logout(req);
+  //       return res.status(HttpStatus.OK).json({
+  //         statusCode: HttpStatus.OK,
+  //         data: logout,
+  //       });
+  //     } catch (error) {
+  //       return res.status(HttpStatus.UNAUTHORIZED).json({
+  //         statusCode: HttpStatus.UNAUTHORIZED,
+  //         message: error.message,
+  //       });
+  //     }
+  //   }
 
   @UseGuards(AuthGuard)
-  @Get('/profile')
+  @Get('/getProfile')
   async getProfile(@Req() req: Request, @Res() res: Response) {
     try {
-      console.log("req user",req.headers['authorization'].split(" ")[1]);
-      
+      console.log('req user', req.headers['authorization'].split(' ')[1]);
+
       const authCheck = await this.authService.authCheck(req);
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
@@ -102,23 +103,22 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Post("/update/:id")
-  async updateUser(@Body() authDto: AuthRegisterDto, @Param("id") id: string, @Req() req: Request) {
-    
+  @Post('/updateProfile')
+  async updateUser(
+    @Body() authDto: AuthRegisterDto,
+    @Query() params: QueryParams,
+    @Req() req: Request,
+  ) {
     try {
-      const user = req["user"]
-    if (!user) {
-      return "Unauthorized"
-    }
-    const updateProfile = await this.authService.updateUser(
-      authDto,
-      id,
-      req
-    );
-    console.log('updateProfile controller:', updateProfile);
-    return updateProfile;
+      const user = req['user'];
+      if (!user) {
+        return 'Unauthorized';
+      }
+      const updateProfile = await this.authService.updateUser(authDto, id, req);
+      console.log('updateProfile controller:', updateProfile);
+      return updateProfile;
     } catch (error) {
-      return error
+      return error;
     }
   }
 }

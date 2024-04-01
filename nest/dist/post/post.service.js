@@ -17,7 +17,7 @@ let PostService = class PostService {
         this.prisma = prisma;
     }
     async createPost(postDto, req) {
-        const user = req["user"];
+        const user = req['user'];
         if (!user) {
             throw new Error('Unauthorized');
         }
@@ -26,21 +26,14 @@ let PostService = class PostService {
             data: {
                 title,
                 content,
-                authorId: user.id
+                authorId: user.id,
             },
         });
         return post;
     }
-    async updatePost(params) {
-        const { data, where } = params;
-        return this.prisma.post.update({
-            data,
-            where,
-        });
-    }
     async deletePost(id, req) {
         const user = req['user'];
-        console.log("user con post", user);
+        console.log('user con post', user);
         if (!user) {
             throw new Error('Unauthorized');
         }
