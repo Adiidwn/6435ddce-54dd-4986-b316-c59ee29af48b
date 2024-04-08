@@ -8,14 +8,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
-const auth_module_1 = require("./auth/auth.module");
-const post_module_1 = require("./post/post.module");
+const logout_1 = require("./middlewares/logout");
+const service_modules_1 = require("./modules/service.modules");
+const prisma_service_1 = require("./prisma.service");
 let AppModule = class AppModule {
+    configure(consumer) {
+        consumer
+            .apply(logout_1.JwtMiddleware)
+            .exclude({ path: '/api/v1/auth/login', method: common_1.RequestMethod.POST }, { path: '/api/v1/auth/register', method: common_1.RequestMethod.POST })
+            .forRoutes('*');
+    }
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule, post_module_1.PostModule],
+        imports: [service_modules_1.ServiceModules],
+        providers: [logout_1.JwtMiddleware, prisma_service_1.PrismaService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

@@ -1,8 +1,25 @@
-import { Module } from '@nestjs/common';
-import { AuthModule } from './auth/auth.module';
-import { ProfileModule } from './Profile/profile.module';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
+import { JwtMiddleware } from './middlewares/logout';
+import { ServiceModules } from './modules/service.modules';
+import { PrismaService } from './prisma.service';
 
 @Module({
-  imports: [AuthModule, ProfileModule],
+  imports: [ServiceModules],
+  providers: [JwtMiddleware, PrismaService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(JwtMiddleware)
+      .exclude(
+        { path: '/api/v1/auth/login', method: RequestMethod.POST },
+        { path: '/api/v1/auth/register', method: RequestMethod.POST },
+      )
+      .forRoutes('*');
+  }
+}

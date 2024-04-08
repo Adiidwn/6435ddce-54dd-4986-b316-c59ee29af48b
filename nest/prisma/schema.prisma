@@ -11,7 +11,7 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(uuid()) @map("_id")
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
   email    String    @unique
   name     String?
   password String
@@ -23,7 +23,7 @@ model User {
 }
 
 model Profile {
-  id           String   @id @default(uuid()) @map("_id")
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   display_name String
   gender       String
   birthday     DateTime
@@ -36,6 +36,12 @@ model Profile {
   ceatedAt     DateTime @default(now())
 
   @@map("posts")
+}
+
+model BlacklistedToken {
+  id        String   @id @default(uuid()) @map("_id")
+  token     String   @unique
+  expiresAt DateTime
 }
 
 enum UserRole {

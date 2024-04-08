@@ -35,7 +35,7 @@ export class AboutDto {
   @IsNotEmpty()
   @IsNumber()
   @ApiProperty()
-  heigth: number;
+  height: number;
 
   @IsNotEmpty()
   @IsNumber()
