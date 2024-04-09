@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { AboutDto, updateProfile } from 'src/dto/about.dto';
 import { QueryParams } from 'src/dto/request.dto';
@@ -146,13 +146,13 @@ export class ProfileService {
         },
         select: {
           display_name: true,
-          authorId: true,
-          birthday: true,
           gender: true,
-          height: true,
+          birthday: true,
           horoscope: true,
-          weight: true,
           zodiac: true,
+          height: true,
+          weight: true,
+          authorId: true,
         },
         take,
         orderBy: {
@@ -161,9 +161,29 @@ export class ProfileService {
       }),
     ]);
 
+    const datas = data.map((x) => {
+      const birthday = new Date(x.birthday);
+      const ageDate = new Date(Date.now() - birthday.getTime());
+      const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+      const formattedBirthday = `${birthday.getDate()}/${
+        birthday.getMonth() + 1
+      }/${birthday.getFullYear()}`;
+      return {
+        display_name: x.display_name,
+        gender: x.gender,
+        birthday: formattedBirthday,
+        age: age,
+        horoscope: x.horoscope,
+        zodiac: x.zodiac,
+        height: x.height + 'cm',
+        weight: x.weight + 'kg',
+        authorId: x.authorId,
+      };
+    });
+
     return {
       total_data,
-      data,
+      datas,
     };
   }
 
@@ -273,15 +293,27 @@ export class ProfileService {
     return createProfile;
   }
 
-  // async deletePost(id: string, req: Request){
-  //   const user = req['user'];
-  //   console.log('user con post', user);
+  async interest(dto: string[], req: Request) {
+    try {
+      const user = req['user'];
+      if (!user) {
+        throw new UnauthorizedException('unknown user');
+      }
 
-  //   if (!user) {
-  //     throw new Error('Unauthorized');
-  //   }
-  //   return this.prisma.post.delete({
-  //     where: { id },
-  //   });
-  // }
+      const createProfile = await this.prisma.profile.update({
+        where: {
+          authorId: user.payload.id,
+        },
+        data: {
+          interest: {
+            set: dto,
+          },
+        },
+      });
+
+      return createProfile;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

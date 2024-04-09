@@ -33,6 +33,7 @@ model Profile {
   weight       Float
   author       User?    @relation(fields: [authorId], references: [id])
   authorId     String?  @unique
+  interest     Json?
   ceatedAt     DateTime @default(now())
 
   @@map("posts")

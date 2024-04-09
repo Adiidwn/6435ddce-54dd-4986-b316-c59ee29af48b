@@ -15,18 +15,20 @@ export declare class ProfileService {
         height: number;
         weight: number;
         authorId: string;
+        interest: import(".prisma/client").Prisma.JsonValue;
         ceatedAt: Date;
     }>;
     getProfile(params: QueryParams): Promise<{
         total_data: number;
-        data: {
+        datas: {
             display_name: string;
             gender: string;
-            birthday: Date;
+            birthday: string;
+            age: number;
             horoscope: string;
             zodiac: string;
-            height: number;
-            weight: number;
+            height: string;
+            weight: string;
             authorId: string;
         }[];
     }>;
@@ -40,6 +42,20 @@ export declare class ProfileService {
         height: number;
         weight: number;
         authorId: string;
+        interest: import(".prisma/client").Prisma.JsonValue;
+        ceatedAt: Date;
+    }>;
+    interest(dto: string[], req: Request): Promise<{
+        id: string;
+        display_name: string;
+        gender: string;
+        birthday: Date;
+        horoscope: string;
+        zodiac: string;
+        height: number;
+        weight: number;
+        authorId: string;
+        interest: import(".prisma/client").Prisma.JsonValue;
         ceatedAt: Date;
     }>;
 }

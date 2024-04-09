@@ -161,13 +161,13 @@ let ProfileService = class ProfileService {
                 },
                 select: {
                     display_name: true,
-                    authorId: true,
-                    birthday: true,
                     gender: true,
-                    height: true,
+                    birthday: true,
                     horoscope: true,
-                    weight: true,
                     zodiac: true,
+                    height: true,
+                    weight: true,
+                    authorId: true,
                 },
                 take,
                 orderBy: {
@@ -175,9 +175,26 @@ let ProfileService = class ProfileService {
                 },
             }),
         ]);
+        const datas = data.map((x) => {
+            const birthday = new Date(x.birthday);
+            const ageDate = new Date(Date.now() - birthday.getTime());
+            const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+            const formattedBirthday = `${birthday.getDate()}/${birthday.getMonth() + 1}/${birthday.getFullYear()}`;
+            return {
+                display_name: x.display_name,
+                gender: x.gender,
+                birthday: formattedBirthday,
+                age: age,
+                horoscope: x.horoscope,
+                zodiac: x.zodiac,
+                height: x.height + 'cm',
+                weight: x.weight + 'kg',
+                authorId: x.authorId,
+            };
+        });
         return {
             total_data,
-            data,
+            datas,
         };
     }
     async updateProfile(updateDto, req) {
@@ -291,6 +308,28 @@ let ProfileService = class ProfileService {
             },
         });
         return createProfile;
+    }
+    async interest(dto, req) {
+        try {
+            const user = req['user'];
+            if (!user) {
+                throw new common_1.UnauthorizedException('unknown user');
+            }
+            const createProfile = await this.prisma.profile.update({
+                where: {
+                    authorId: user.payload.id,
+                },
+                data: {
+                    interest: {
+                        set: dto,
+                    },
+                },
+            });
+            return createProfile;
+        }
+        catch (error) {
+            throw error;
+        }
     }
 };
 exports.ProfileService = ProfileService;

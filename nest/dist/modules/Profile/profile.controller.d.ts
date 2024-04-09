@@ -17,6 +17,7 @@ export declare class ProfileController {
             height: number;
             weight: number;
             authorId: string;
+            interest: import(".prisma/client").Prisma.JsonValue;
             ceatedAt: Date;
         };
         _meta: {
@@ -29,11 +30,12 @@ export declare class ProfileController {
         data: {
             display_name: string;
             gender: string;
-            birthday: Date;
+            birthday: string;
+            age: number;
             horoscope: string;
             zodiac: string;
-            height: number;
-            weight: number;
+            height: string;
+            weight: string;
             authorId: string;
         }[];
         metadata: {
@@ -62,6 +64,27 @@ export declare class ProfileController {
             height: number;
             weight: number;
             authorId: string;
+            interest: import(".prisma/client").Prisma.JsonValue;
+            ceatedAt: Date;
+        };
+        _meta: {
+            code: HttpStatus;
+            status: string;
+            message: string;
+        };
+    }>;
+    interest(dto: string[], req: Request): Promise<{
+        data: {
+            id: string;
+            display_name: string;
+            gender: string;
+            birthday: Date;
+            horoscope: string;
+            zodiac: string;
+            height: number;
+            weight: number;
+            authorId: string;
+            interest: import(".prisma/client").Prisma.JsonValue;
             ceatedAt: Date;
         };
         _meta: {

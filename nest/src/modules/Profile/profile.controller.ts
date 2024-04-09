@@ -41,7 +41,7 @@ export class ProfileController {
   @Get()
   async getProfile(@Query() params: QueryParams) {
     try {
-      const { total_data, data } = await this.postService.getProfile(params);
+      const { total_data, datas } = await this.postService.getProfile(params);
       const meta_data = {
         total_count: total_data,
         page_count: Math.ceil(total_data / (params.per_page ?? 10)),
@@ -52,7 +52,7 @@ export class ProfileController {
         keyword: params.keyword,
       };
       return {
-        data: data,
+        data: datas,
         metadata: meta_data ? meta_data : null,
         _meta: {
           code: HttpStatus.OK,
@@ -82,20 +82,23 @@ export class ProfileController {
       throw error;
     }
   }
-  // @UseGuards(AuthGuard, RolesGuard)
-  // @Delete('/post/:id')
-  // @Roles(Role.ADMIN)
-  // async deletePost(
-  //   @Param('id') id: string,
-  //   @Req() req: Request,
-  //   @Res() res: Response,
-  // ) {
-  //   try {
-  //     const deletePost = await this.postService.deletePost(id, req);
-  //     return res.status(HttpStatus.OK).json({
-  //       statusCode: HttpStatus.OK,
-  //       data: deletePost,
-  //     });
-  //   } catch (error) {}
-  // }
+
+  @Post('interest')
+  async interest(@Body() dto: string[], @Req() req: Request) {
+    try {
+      console.log('dto', dto);
+
+      const data = await this.postService.interest(dto, req);
+      return {
+        data: data,
+        _meta: {
+          code: HttpStatus.OK,
+          status: SUCCESS_STATUS,
+          message: 'success create interest',
+        },
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
 }

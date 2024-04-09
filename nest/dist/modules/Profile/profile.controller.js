@@ -41,7 +41,7 @@ let ProfileController = class ProfileController {
     }
     async getProfile(params) {
         try {
-            const { total_data, data } = await this.postService.getProfile(params);
+            const { total_data, datas } = await this.postService.getProfile(params);
             const meta_data = {
                 total_count: total_data,
                 page_count: Math.ceil(total_data / (params.per_page ?? 10)),
@@ -52,7 +52,7 @@ let ProfileController = class ProfileController {
                 keyword: params.keyword,
             };
             return {
-                data: data,
+                data: datas,
                 metadata: meta_data ? meta_data : null,
                 _meta: {
                     code: common_1.HttpStatus.OK,
@@ -74,6 +74,23 @@ let ProfileController = class ProfileController {
                     code: common_1.HttpStatus.OK,
                     status: response_constant_1.SUCCESS_STATUS,
                     message: 'success update profile',
+                },
+            };
+        }
+        catch (error) {
+            throw error;
+        }
+    }
+    async interest(dto, req) {
+        try {
+            console.log('dto', dto);
+            const data = await this.postService.interest(dto, req);
+            return {
+                data: data,
+                _meta: {
+                    code: common_1.HttpStatus.OK,
+                    status: response_constant_1.SUCCESS_STATUS,
+                    message: 'success create interest',
                 },
             };
         }
@@ -106,6 +123,14 @@ __decorate([
     __metadata("design:paramtypes", [about_dto_1.updateProfile, Object]),
     __metadata("design:returntype", Promise)
 ], ProfileController.prototype, "updateProfile", null);
+__decorate([
+    (0, common_1.Post)('interest'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array, Object]),
+    __metadata("design:returntype", Promise)
+], ProfileController.prototype, "interest", null);
 exports.ProfileController = ProfileController = __decorate([
     (0, common_1.Controller)('api/v1/profile'),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),

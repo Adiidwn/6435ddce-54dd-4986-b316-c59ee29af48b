@@ -1,17 +1,17 @@
 version: "3.8"
 
 services:
-  postgres:
-    image: postgres:latest
-    container_name: postgres
+  mongodb:
+    image: mongodb:latest
+    container_name: mongodb
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: local
-      POSTGRES_PASSWORD: local
+      MONGODB_DB: mongodb
+      MONGODB_USER: nesttest
+      MONGODB_PASSWORD: nesttest
     ports:
       - "5432:5432"
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/mongodb/data
     networks:
       - nestjs
 
@@ -24,9 +24,9 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - postgres
+      - mongodb
     environment:
-      DATABASE_URL: postgres://local:local@postgres:5432/postgres?schema=public # Sesuaikan dengan kredensial dan nama database yang sesuai
+      DATABASE_URL: mongodb+srv://nesttest:nesttest@nesttest.exnjfgz.mongodb.net/Nesttest?retryWrites=true&w=majority&appName=Nesttest # Sesuaikan dengan kredensial dan nama database yang sesuai
     networks:
       - nestjs
 
