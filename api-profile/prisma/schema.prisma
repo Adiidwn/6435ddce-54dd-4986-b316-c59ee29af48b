@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  display_name String
+  gender       String
+  birthday     DateTime
+  horoscope    String
+  zodiac       String
+  height       Float
+  weight       Float
+  authorId     String?  @unique
+  image        String
+  interest     Json?
+  ceatedAt     DateTime @default(now())
+
+  @@map("posts")
+}
+
+model BlacklistedToken {
+  id        String   @id @default(uuid()) @map("_id")
+  token     String   @unique
+  expiresAt DateTime
+}
+
+model Message {
+  chat_id    String @id @default(auto()) @map("_id") @db.ObjectId
+  sennder_id String
+  message    String
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
