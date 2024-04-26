@@ -1,7 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { AuthRegisterDto } from 'src/dto/auth.dto';
 export declare class AuthService {
-    private readonly http;
-    constructor(http: HttpService);
-    register(registerDto: AuthRegisterDto): Promise<import("rxjs").Observable<import("axios").AxiosResponse<any, any>>>;
+    private readonly httpService;
+    constructor(httpService: HttpService);
+    register(registerDto: any): Promise<any>;
+    findAll(params: any, token: string): Promise<any>;
+    login(authLoginDto: any): Promise<any>;
+    authCheck(token: string): Promise<any>;
 }

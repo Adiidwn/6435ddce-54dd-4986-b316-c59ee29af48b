@@ -7,14 +7,12 @@ import {
   Query,
   Req,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthLoginDto, AuthRegisterDto } from 'src/dto/auth.dto';
 import { QueryParams } from 'src/dto/request.dto';
-import { AuthGuard } from './auth.guard';
-import { AuthService } from './auth.service';
 import { SUCCESS_STATUS } from 'src/utils/response.constant';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {

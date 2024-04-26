@@ -12,19 +12,74 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
+const rxjs_1 = require("rxjs");
 let AuthService = class AuthService {
-    constructor(http) {
-        this.http = http;
+    constructor(httpService) {
+        this.httpService = httpService;
     }
     async register(registerDto) {
         try {
-            const data = await this.http.post(`${process.env.SVC_DB_AUTH}/api/v1/auth/register`, {
-                registerDto,
-            });
+            const data = await this.httpService
+                .post(`http://localhost:3000/api/v1/auth/register`, registerDto)
+                .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
+                throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
+            }))
+                .toPromise();
             return data;
         }
         catch (error) {
             throw error;
+        }
+    }
+    async findAll(params, token) {
+        try {
+            const data = this.httpService
+                .get(`http://localhost:3000/api/v1/auth`, {
+                params,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
+                throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
+            }))
+                .toPromise();
+            return data;
+        }
+        catch (error) {
+            throw new common_1.HttpException(`${error.response.statusText} : ${error.response.data?.errorMessage}`, error.response.status);
+        }
+    }
+    async login(authLoginDto) {
+        try {
+            const data = await this.httpService
+                .post(`http://localhost:3000/api/v1/auth/login`, authLoginDto)
+                .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
+                throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
+            }))
+                .toPromise();
+            return data;
+        }
+        catch (error) {
+            throw error;
+        }
+    }
+    async authCheck(token) {
+        try {
+            const data = await this.httpService
+                .get(`http://localhost:3000/api/v1/auth/getProfile`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
+                throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
+            }))
+                .toPromise();
+            return data;
+        }
+        catch (error) {
+            throw new common_1.HttpException(`${error.response.statusText} : ${error.response.data?.errorMessage}`, error.response.status);
         }
     }
 };

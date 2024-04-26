@@ -1,6 +1,7 @@
+import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
-export const buildSwagger = (app) => {
+export const buildSwagger = (app: INestApplication) => {
   const config = new DocumentBuilder()
     .setTitle('Cats example')
     .setDescription('The cats API description')
@@ -9,7 +10,7 @@ export const buildSwagger = (app) => {
   return SwaggerModule.createDocument(app, config);
 };
 
-export const setupSwagger = (app) => {
+export const setupSwagger = (app: INestApplication) => {
   const document = buildSwagger(app);
   SwaggerModule.setup('api', app, document);
 };

@@ -6,7 +6,7 @@ services:
     ports:
       - '3000:4000'
     depends_on:
-      - rabbitmq
+      - auth-services
 
   api-profile:
     build:
@@ -14,8 +14,8 @@ services:
     ports:
       - '3012:4000'
     depends_on:
-      - account-services
-      - profile-services
+      - auth-services
+      - Profile-services
 
   api-gateway:
     build:
@@ -23,12 +23,8 @@ services:
     ports:
       - '8000:4000'
     depends_on:
-      - rabbitmq
+      - app-services
 
-  rabbitmq:
-    image: 'rabbitmq:3-management'
-    ports:
-      - '5672:5672'
-      - '15672:15672'
+
     
    

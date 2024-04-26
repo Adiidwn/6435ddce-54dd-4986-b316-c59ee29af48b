@@ -1,136 +1,105 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
-import { AuthRegisterDto } from 'src/dto/auth.dto';
+import { HttpException, Injectable } from '@nestjs/common';
+import { catchError, map } from 'rxjs';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly http: HttpService) {}
+  constructor(private readonly httpService: HttpService) {}
 
-  async register(registerDto: AuthRegisterDto) {
+  async register(registerDto: any) {
     try {
-      const data = await this.http.post(
-        `${process.env.SVC_DB_AUTH}/api/v1/auth/register`,
-        {
-          registerDto,
-        },
-      );
+      const data = await this.httpService
+        .post(`http://localhost:3000/api/v1/auth/register`, registerDto)
+        .pipe(
+          map((response) => response.data),
+          catchError((e) => {
+            throw new HttpException(
+              `${e.response.statusText} : ${e.response.data?.errorMessage}`,
+              e.response.status,
+            );
+          }),
+        )
+        .toPromise();
       return data;
     } catch (error) {
       throw error;
     }
   }
 
-  // async findAll(params: QueryParams) {
-  //   let QueryArr = [];
+  async findAll(params: any, token: string) {
+    try {
+      const data = this.httpService
+        .get(`http://localhost:3000/api/v1/auth`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${token}`, // Include bearer token in the headers
+          },
+        })
+        .pipe(
+          map((response) => response.data),
+          catchError((e) => {
+            throw new HttpException(
+              `${e.response.statusText} : ${e.response.data?.errorMessage}`,
+              e.response.status,
+            );
+          }),
+        )
+        .toPromise();
+      return data;
+    } catch (error) {
+      throw new HttpException(
+        `${error.response.statusText} : ${error.response.data?.errorMessage}`,
+        error.response.status,
+      );
+    }
+  }
 
-  //   const skip = params.per_page * (params.page - 1);
-  //   const take = params.per_page;
+  async login(authLoginDto: any) {
+    try {
+      const data = await this.httpService
+        .post(`http://localhost:3000/api/v1/auth/login`, authLoginDto)
+        .pipe(
+          map((response) => response.data),
+          catchError((e) => {
+            throw new HttpException(
+              `${e.response.statusText} : ${e.response.data?.errorMessage}`,
+              e.response.status,
+            );
+          }),
+        )
+        .toPromise();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 
-  //   if (params.username) {
-  //     QueryArr.push({
-  //       name: {
-  //         contains: params.username,
-  //       },
-  //     });
-  //   }
-
-  //   const [total_data, datas] = await this.prisma.$transaction([
-  //     this.prisma.user.count({
-  //       where: {
-  //         AND: QueryArr,
-  //       },
-  //     }),
-  //     this.prisma.user.findMany({
-  //       where: {
-  //         AND: QueryArr,
-  //       },
-  //       select: {
-  //         id: true,
-  //         name: true,
-  //         email: true,
-  //         role: true,
-  //         ceatedAt: true,
-  //         chat_id: true,
-  //       },
-  //       take,
-  //       orderBy: {
-  //         id: params.sort,
-  //       },
-  //     }),
-  //   ]);
-
-  //   return {
-  //     datas,
-  //     total_data,
-  //   };
-  // }
-
-  // async login(authLoginDto: AuthLoginDto) {
-  //   try {
-  //     const checkEmail = await this.prisma.user.findFirst({
-  //       where: {
-  //         email: authLoginDto.email,
-  //       },
-  //     });
-
-  //     if (!checkEmail) {
-  //       return {
-  //         user: null,
-  //         access_token: 'Error Email / password is wrong',
-  //       };
-  //     }
-  //     console.log('checkEmail', checkEmail);
-
-  //     const passwordMatch = await bcrypt.compare(
-  //       authLoginDto.password,
-  //       checkEmail.password,
-  //     );
-  //     console.log('passwordMatch', passwordMatch);
-
-  //     if (!passwordMatch) {
-  //       throw new Error('Invalid email or password');
-  //     }
-
-  //     const payload = {
-  //       id: checkEmail.id,
-  //       email: checkEmail.email.split('@')[0],
-  //       name: checkEmail.name,
-  //       role: checkEmail.role,
-  //     };
-
-  //     const token = await this.jwtService.signAsync(
-  //       { payload },
-  //       { expiresIn: '10000000h' },
-  //     );
-  //     return {
-  //       payload,
-  //       access_token: token,
-  //     };
-  //   } catch (e) {
-  //     throw new Error(e);
-  //   }
-  // }
-
-  // async authCheck(req: Request) {
-  //   try {
-  //     const loginSession = req['user'];
-  //     const user = await this.prisma.user.findFirst({
-  //       where: {
-  //         id: loginSession.id,
-  //       },
-  //       select: {
-  //         id: true,
-  //         email: true,
-  //         name: true,
-  //         role: true,
-  //       },
-  //     });
-
-  //     return user;
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // }
+  async authCheck(token: string) {
+    try {
+      const data = await this.httpService
+        .get(`http://localhost:3000/api/v1/auth/getProfile`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include bearer token in the headers
+          },
+        })
+        .pipe(
+          map((response) => response.data),
+          catchError((e) => {
+            throw new HttpException(
+              `${e.response.statusText} : ${e.response.data?.errorMessage}`,
+              e.response.status,
+            );
+          }),
+        )
+        .toPromise();
+      return data;
+    } catch (error) {
+      throw new HttpException(
+        `${error.response.statusText} : ${error.response.data?.errorMessage}`,
+        error.response.status,
+      );
+    }
+  }
 
   // async logout(req: Request, res: Response) {
   //   const blackListToken = await this.prisma.blacklistedToken.create({

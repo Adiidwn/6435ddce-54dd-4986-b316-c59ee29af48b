@@ -46,8 +46,9 @@ let AuthService = class AuthService {
             if (!user) {
                 throw new Error('Failed to create user');
             }
-            const profileURL = `${process.env.SVC_DB_PROFILE}/api/v1/profile`;
-            const profile = axios_1.default.post(profileURL, {
+            const profileURL = `${process.env.SVC_DB_PROFILE}/api/v1/profile?userId=${user.id}`;
+            console.log('profileURL', profileURL);
+            const profile = await axios_1.default.post(profileURL, {
                 authorId: user.id,
                 display_name: user.name,
                 gender: '',
@@ -56,7 +57,9 @@ let AuthService = class AuthService {
                 zodiac: '',
                 height: 0,
                 weight: 0,
+                image: '',
             });
+            console.log('profile', profile);
             return user;
         }
         catch (error) {
@@ -98,6 +101,8 @@ let AuthService = class AuthService {
                 },
             }),
         ]);
+        console.log('datas', datas);
+        console.log('params', params);
         return {
             datas,
             total_data,
@@ -141,6 +146,7 @@ let AuthService = class AuthService {
     async authCheck(req) {
         try {
             const loginSession = req['user'];
+            console.log('loginSession', loginSession);
             const user = await this.prisma.user.findFirst({
                 where: {
                     id: loginSession.id,

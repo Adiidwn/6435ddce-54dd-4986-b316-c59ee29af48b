@@ -7,30 +7,30 @@ import { ProfileService } from './profile.service';
 export class ProfileController {
   constructor(private readonly postService: ProfileService) {}
 
-  @Post()
-  async create(@Body() aboutDto: AboutDto, @Query() params: QueryParams) {
-    try {
-      return await this.postService.createProfile(aboutDto, params);
-    } catch (error) {
-      throw error;
-    }
-  }
+  // @Post()
+  // async create(@Body() aboutDto: AboutDto, @Query() params: QueryParams) {
+  //   try {
+  //     return await this.postService.createProfile(aboutDto, params);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
-  @Get()
-  async getProfile(@Query() params: QueryParams) {
-    try {
-      return await this.postService.getProfile(params);
-    } catch (error) {
-      throw error;
-    }
-  }
+  // @Get()
+  // async getProfile(@Query() params: QueryParams) {
+  //   try {
+  //     return await this.postService.getProfile(params);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
-  @Post('interest')
-  async interest(@Body() dto: string[], @Query() params: QueryParams) {
-    try {
-      return await this.postService.interest(dto, params);
-    } catch (error) {
-      throw error;
-    }
-  }
+  // @Post('interest')
+  // async interest(@Body() dto: string[], @Query() params: QueryParams) {
+  //   try {
+  //     return await this.postService.interest(dto, params);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 }

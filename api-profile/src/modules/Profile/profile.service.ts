@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { error } from 'console';
 import { Request } from 'express';
 import { AboutDto, updateProfile } from 'src/dto/about.dto';
 import { QueryParams } from 'src/dto/request.dto';
@@ -103,6 +104,7 @@ export class ProfileService {
       image: aboutDto.image,
       authorId: params.userId,
     };
+
     const createProfile = await this.prisma.profile.upsert({
       where: {
         authorId: params.userId,

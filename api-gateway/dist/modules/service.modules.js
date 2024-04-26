@@ -10,12 +10,13 @@ exports.ServiceModules = void 0;
 const common_1 = require("@nestjs/common");
 const profile_module_1 = require("./Profile/profile.module");
 const auth_module_1 = require("./auth/auth.module");
+const axios_1 = require("@nestjs/axios");
 let ServiceModules = class ServiceModules {
 };
 exports.ServiceModules = ServiceModules;
 exports.ServiceModules = ServiceModules = __decorate([
     (0, common_1.Module)({
-        imports: [profile_module_1.ProfileModule, auth_module_1.AuthModule],
+        imports: [profile_module_1.ProfileModule, auth_module_1.AuthModule, axios_1.HttpModule],
     })
 ], ServiceModules);
 //# sourceMappingURL=service.modules.js.map

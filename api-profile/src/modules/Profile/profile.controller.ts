@@ -1,17 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-  Query,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
-import { Request } from 'express';
-import { AboutDto, updateProfile } from 'src/dto/about.dto';
+import { Body, Controller, Get, HttpStatus, Post, Query } from '@nestjs/common';
+import { AboutDto } from 'src/dto/about.dto';
 import { QueryParams } from 'src/dto/request.dto';
 import { SUCCESS_STATUS } from 'src/utils/response.constant';
 import { ProfileService } from './profile.service';

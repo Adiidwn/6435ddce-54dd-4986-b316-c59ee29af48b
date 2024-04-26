@@ -1,13 +1,12 @@
-import { HttpService } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [HttpService],
+  imports: [HttpModule],
   controllers: [AuthController],
-  providers: [AuthService, PrismaService],
+  providers: [AuthService],
   exports: [AuthService],
 })
 export class AuthModule {}

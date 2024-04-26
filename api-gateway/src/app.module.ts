@@ -1,15 +1,11 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
-import { JwtMiddleware } from './middlewares/logout';
+import { Module } from '@nestjs/common';
+import { ApiModule } from './api/api.module';
 import { ServiceModules } from './modules/service.modules';
-import { PrismaService } from './prisma.service';
+import { ApiService } from './api/api.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [ServiceModules],
-  providers: [JwtMiddleware, PrismaService],
+  imports: [ServiceModules, ApiModule, HttpModule],
+  providers: [ApiService],
 })
 export class AppModule {}

@@ -11,11 +11,13 @@ const microserviceOptions: MicroserviceOptions = {
   },
 };
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    microserviceOptions,
-  );
+  const app = await NestFactory.create(AppModule, { cors: true });
   setupSwagger(app);
-  await app.listen();
+  app.setGlobalPrefix('/api/v1');
+
+  const PORT = process.env.PORT || 8000;
+
+  await app.listen(PORT);
+  console.log('Application is running on: ', PORT);
 }
 bootstrap();
