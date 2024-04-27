@@ -47,7 +47,6 @@ let AuthService = class AuthService {
                 throw new Error('Failed to create user');
             }
             const profileURL = `${process.env.SVC_DB_PROFILE}/api/v1/profile?userId=${user.id}`;
-            console.log('profileURL', profileURL);
             const profile = await axios_1.default.post(profileURL, {
                 authorId: user.id,
                 display_name: user.name,
@@ -59,7 +58,6 @@ let AuthService = class AuthService {
                 weight: 0,
                 image: '',
             });
-            console.log('profile', profile);
             return user;
         }
         catch (error) {

@@ -9,7 +9,7 @@ export class AuthService {
   async register(registerDto: any) {
     try {
       const data = await this.httpService
-        .post(`http://localhost:3000/api/v1/auth/register`, registerDto)
+        .post(`${process.env.SVC_DB_AUTH}/api/v1/auth/register`, registerDto)
         .pipe(
           map((response) => response.data),
           catchError((e) => {
@@ -29,7 +29,7 @@ export class AuthService {
   async findAll(params: any, token: string) {
     try {
       const data = this.httpService
-        .get(`http://localhost:3000/api/v1/auth`, {
+        .get(`${process.env.SVC_DB_AUTH}/api/v1/auth`, {
           params,
           headers: {
             Authorization: `Bearer ${token}`, // Include bearer token in the headers
@@ -77,7 +77,7 @@ export class AuthService {
   async authCheck(token: string) {
     try {
       const data = await this.httpService
-        .get(`http://localhost:3000/api/v1/auth/getProfile`, {
+        .get(`${process.env.SVC_DB_AUTH}/api/v1/auth/getProfile`, {
           headers: {
             Authorization: `Bearer ${token}`, // Include bearer token in the headers
           },

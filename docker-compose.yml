@@ -4,27 +4,29 @@ services:
     build:
       context: ./api-auth
     ports:
-      - '3000:4000'
-    depends_on:
-      - auth-services
-
+      - '3000:3000'
+    environment:
+      - SVC_DB_PROFILE=http://api-profile:3012
+  
   api-profile:
     build:
-      context: ./api_profile
+      context: ./api-profile
     ports:
-      - '3012:4000'
+      - '3012:3012'
     depends_on:
-      - auth-services
-      - Profile-services
+      -  api-auth
+    environment:
+      - SVC_DB_AUTH=http://api-auth:3000
 
   api-gateway:
     build:
       context: ./api-gateway
     ports:
-      - '8000:4000'
+      - '8000:8000'
     depends_on:
-      - app-services
-
-
+      - api-profile
+    environment:
+      - SVC_DB_AUTH=http://api-auth:3000
+      - SVC_DB_PROFILE=http://api-profile:3012
     
    

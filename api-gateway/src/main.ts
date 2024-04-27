@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { setupSwagger } from './swagger';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import * as dotenv from 'dotenv';
 
 const microserviceOptions: MicroserviceOptions = {
   transport: Transport.RMQ,
@@ -10,14 +11,15 @@ const microserviceOptions: MicroserviceOptions = {
     queue: 'api-gateway-queue',
   },
 };
+dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   setupSwagger(app);
   app.setGlobalPrefix('/api/v1');
 
-  const PORT = process.env.PORT || 8000;
+  const port = process.env.PORT;
 
-  await app.listen(PORT);
-  console.log('Application is running on: ', PORT);
+  await app.listen(port);
+  console.log('Application is running on: ', port);
 }
 bootstrap();

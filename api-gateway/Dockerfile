@@ -16,6 +16,6 @@ RUN npm install
 # Generate Prisma client
 RUN npx prisma generate
 
-EXPOSE 4000
+EXPOSE 8000
 # Define the command to run your application
 CMD ["npm", "run", "start:dev"]

@@ -20,7 +20,7 @@ let AuthService = class AuthService {
     async register(registerDto) {
         try {
             const data = await this.httpService
-                .post(`http://localhost:3000/api/v1/auth/register`, registerDto)
+                .post(`${process.env.SVC_DB_AUTH}/api/v1/auth/register`, registerDto)
                 .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
                 throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
             }))
@@ -34,7 +34,7 @@ let AuthService = class AuthService {
     async findAll(params, token) {
         try {
             const data = this.httpService
-                .get(`http://localhost:3000/api/v1/auth`, {
+                .get(`${process.env.SVC_DB_AUTH}/api/v1/auth`, {
                 params,
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -67,7 +67,7 @@ let AuthService = class AuthService {
     async authCheck(token) {
         try {
             const data = await this.httpService
-                .get(`http://localhost:3000/api/v1/auth/getProfile`, {
+                .get(`${process.env.SVC_DB_AUTH}/api/v1/auth/getProfile`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
