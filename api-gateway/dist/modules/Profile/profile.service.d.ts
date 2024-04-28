@@ -1,5 +1,8 @@
-import { ApiService } from 'src/api/api.service';
+import { HttpService } from '@nestjs/axios';
 export declare class ProfileService {
-    private apiService;
-    constructor(apiService: ApiService);
+    private httpService;
+    constructor(httpService: HttpService);
+    createProfile(aboutDto: any, params: any, token: string): Promise<any>;
+    getProfile(params: any, token: string): Promise<any>;
+    interest(dto: any, params: any, token: string): Promise<any>;
 }

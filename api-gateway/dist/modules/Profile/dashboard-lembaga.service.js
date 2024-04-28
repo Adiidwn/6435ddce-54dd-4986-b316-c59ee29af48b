@@ -9,71 +9,76 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProfileService = void 0;
+exports.DashboardLembagaService = void 0;
 const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
 const rxjs_1 = require("rxjs");
-let ProfileService = class ProfileService {
+let DashboardLembagaService = class DashboardLembagaService {
     constructor(httpService) {
         this.httpService = httpService;
     }
-    async createProfile(aboutDto, params, token) {
+    async login(body) {
         try {
-            console.log('params', params);
-            const data = this.httpService
-                .post(`${process.env.SVC_DB_PROFILE}/api/v1/profile`, aboutDto, {
-                params,
-            })
+            const resp = this.httpService
+                .post(`${process.env.SVC_DB_USER}/api/v1/new-dashboard-lembaga/login`, body)
                 .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
                 throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
-            }))
-                .toPromise();
-            return data;
+            }));
+            return resp;
         }
         catch (error) {
             throw new common_1.HttpException(`${error.response.statusText} : ${error.response.data?.errorMessage}`, error.response.status);
         }
     }
-    async getProfile(params, token) {
+    async findListSiswa(lembaga_id, params) {
         try {
-            const data = this.httpService
-                .get(`${process.env.SVC_DB_PROFILE}/api/v1/profile`, {
+            const resp = this.httpService
+                .get(`${process.env.SVC_DB_USER}/api/v1/new-dashboard-lembaga/list-siswa/${lembaga_id}`, {
                 params,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
             })
                 .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
                 throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
-            }))
-                .toPromise();
-            return data;
+            }));
+            return resp;
         }
         catch (error) {
             throw new common_1.HttpException(`${error.response.statusText} : ${error.response.data?.errorMessage}`, error.response.status);
         }
     }
-    async interest(dto, params, token) {
+    async getDaftarSiswaLembaga(id_bimker, params) {
         try {
-            console.log('params', params);
-            const data = this.httpService
-                .post(`${process.env.SVC_DB_PROFILE}/api/v1/profile/interest`, dto, {
+            const resp = this.httpService
+                .get(`${process.env.SVC_DB_USER}/api/v1/new-dashboard-lembaga/daftar-siswa/${id_bimker}`, {
                 params,
             })
                 .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
                 throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
-            }))
-                .toPromise();
-            return data;
+            }));
+            return resp;
+        }
+        catch (error) {
+            throw new common_1.HttpException(`${error.response.statusText} : ${error.response.data?.errorMessage}`, error.response.status);
+        }
+    }
+    async findListTobk(lembaga_id, params) {
+        try {
+            const resp = this.httpService
+                .get(`${process.env.SVC_DB_USER}/api/v1/new-dashboard-lembaga/list-tobk/${lembaga_id}`, {
+                params,
+            })
+                .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
+                throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
+            }));
+            return resp;
         }
         catch (error) {
             throw new common_1.HttpException(`${error.response.statusText} : ${error.response.data?.errorMessage}`, error.response.status);
         }
     }
 };
-exports.ProfileService = ProfileService;
-exports.ProfileService = ProfileService = __decorate([
+exports.DashboardLembagaService = DashboardLembagaService;
+exports.DashboardLembagaService = DashboardLembagaService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [axios_1.HttpService])
-], ProfileService);
-//# sourceMappingURL=profile.service.js.map
+], DashboardLembagaService);
+//# sourceMappingURL=dashboard-lembaga.service.js.map

@@ -34,7 +34,7 @@ let AuthService = class AuthService {
     async findAll(params, token) {
         try {
             const data = this.httpService
-                .get(`${process.env.SVC_DB_AUTH}/api/v1/auth`, {
+                .get(`${process.env.SVC_DB_AUTH}/api/v1/auth?userId=${params}`, {
                 params,
                 headers: {
                     Authorization: `Bearer ${token}`,

@@ -29,7 +29,7 @@ export class AuthService {
   async findAll(params: any, token: string) {
     try {
       const data = this.httpService
-        .get(`${process.env.SVC_DB_AUTH}/api/v1/auth`, {
+        .get(`${process.env.SVC_DB_AUTH}/api/v1/auth?userId=${params}`, {
           params,
           headers: {
             Authorization: `Bearer ${token}`, // Include bearer token in the headers
