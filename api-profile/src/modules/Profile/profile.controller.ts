@@ -1,19 +1,33 @@
-import { Body, Controller, Get, HttpStatus, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { AboutDto } from 'src/dto/about.dto';
 import { QueryParams } from 'src/dto/request.dto';
 import { SUCCESS_STATUS } from 'src/utils/response.constant';
 import { ProfileService } from './profile.service';
+import { Request } from 'express';
 
 @Controller('profile')
 export class ProfileController {
   constructor(private readonly postService: ProfileService) {}
 
   @Post()
-  async create(@Body() aboutDto: AboutDto, @Query() params: QueryParams) {
+  async create(
+    @Body() aboutDto: AboutDto,
+    @Query() params: QueryParams,
+    @Req() req: Request,
+  ) {
     try {
       const createProfile = await this.postService.createProfile(
         aboutDto,
         params,
+        req,
       );
       return {
         createProfile,
@@ -74,11 +88,15 @@ export class ProfileController {
   // }
 
   @Post('interest')
-  async interest(@Body() dto: string[], @Query() params: QueryParams) {
+  async interest(
+    @Body() dto: string[],
+    @Query() params: QueryParams,
+    @Req() req: Request,
+  ) {
     try {
       console.log('dto', dto);
 
-      const data = await this.postService.interest(dto, params);
+      const data = await this.postService.interest(dto, params, req);
       return {
         data: data,
         _meta: {

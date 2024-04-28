@@ -22,9 +22,9 @@ let ProfileController = class ProfileController {
     constructor(postService) {
         this.postService = postService;
     }
-    async create(aboutDto, params) {
+    async create(aboutDto, params, req) {
         try {
-            const createProfile = await this.postService.createProfile(aboutDto, params);
+            const createProfile = await this.postService.createProfile(aboutDto, params, req);
             return {
                 createProfile,
                 _meta: {
@@ -64,10 +64,10 @@ let ProfileController = class ProfileController {
             throw error;
         }
     }
-    async interest(dto, params) {
+    async interest(dto, params, req) {
         try {
             console.log('dto', dto);
-            const data = await this.postService.interest(dto, params);
+            const data = await this.postService.interest(dto, params, req);
             return {
                 data: data,
                 _meta: {
@@ -87,8 +87,10 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Query)()),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [about_dto_1.AboutDto, request_dto_1.QueryParams]),
+    __metadata("design:paramtypes", [about_dto_1.AboutDto,
+        request_dto_1.QueryParams, Object]),
     __metadata("design:returntype", Promise)
 ], ProfileController.prototype, "create", null);
 __decorate([
@@ -102,8 +104,9 @@ __decorate([
     (0, common_1.Post)('interest'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Query)()),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array, request_dto_1.QueryParams]),
+    __metadata("design:paramtypes", [Array, request_dto_1.QueryParams, Object]),
     __metadata("design:returntype", Promise)
 ], ProfileController.prototype, "interest", null);
 exports.ProfileController = ProfileController = __decorate([

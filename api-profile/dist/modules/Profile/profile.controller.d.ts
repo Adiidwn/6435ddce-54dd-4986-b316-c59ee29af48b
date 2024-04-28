@@ -2,10 +2,11 @@ import { HttpStatus } from '@nestjs/common';
 import { AboutDto } from 'src/dto/about.dto';
 import { QueryParams } from 'src/dto/request.dto';
 import { ProfileService } from './profile.service';
+import { Request } from 'express';
 export declare class ProfileController {
     private readonly postService;
     constructor(postService: ProfileService);
-    create(aboutDto: AboutDto, params: QueryParams): Promise<{
+    create(aboutDto: AboutDto, params: QueryParams, req: Request): Promise<{
         createProfile: {
             id: string;
             display_name: string;
@@ -53,7 +54,7 @@ export declare class ProfileController {
             message: string;
         };
     }>;
-    interest(dto: string[], params: QueryParams): Promise<{
+    interest(dto: string[], params: QueryParams, req: Request): Promise<{
         data: {
             id: string;
             display_name: string;
