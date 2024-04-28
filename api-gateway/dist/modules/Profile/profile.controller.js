@@ -21,21 +21,20 @@ let ProfileController = class ProfileController {
     constructor(postService) {
         this.postService = postService;
     }
-    async create(aboutDto, params, token) {
+    async create(aboutDto, params, req) {
         try {
-            return await this.postService.createProfile(aboutDto, params, token);
+            return await this.postService.createProfile(aboutDto, params, req);
         }
         catch (error) {
             throw error;
         }
     }
-    async getProfile(params, token) {
-        return await this.postService.getProfile(params, token);
+    async getProfile(params, req) {
+        return await this.postService.getProfile(params, req);
     }
-    async interest(dto, params, token) {
+    async interest(dto, params, req) {
         try {
-            console.log('params', params);
-            return await this.postService.interest(dto, params, token);
+            return await this.postService.interest(dto, params, req);
         }
         catch (error) {
             throw error;
@@ -47,27 +46,27 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Query)()),
-    __param(2, (0, common_1.Headers)()),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [about_dto_1.AboutDto,
-        request_dto_1.QueryParams, String]),
+        request_dto_1.QueryParams, Object]),
     __metadata("design:returntype", Promise)
 ], ProfileController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),
-    __param(1, (0, common_1.Headers)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [request_dto_1.QueryParams, String]),
+    __metadata("design:paramtypes", [request_dto_1.QueryParams, Object]),
     __metadata("design:returntype", Promise)
 ], ProfileController.prototype, "getProfile", null);
 __decorate([
     (0, common_1.Post)('interest'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Query)()),
-    __param(2, (0, common_1.Headers)()),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array, request_dto_1.QueryParams, String]),
+    __metadata("design:paramtypes", [Array, request_dto_1.QueryParams, Object]),
     __metadata("design:returntype", Promise)
 ], ProfileController.prototype, "interest", null);
 exports.ProfileController = ProfileController = __decorate([

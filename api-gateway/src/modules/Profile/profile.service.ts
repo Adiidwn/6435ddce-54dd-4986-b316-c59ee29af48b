@@ -1,16 +1,21 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, Injectable } from '@nestjs/common';
+import { Request } from 'express';
 import { catchError, map } from 'rxjs';
 
 @Injectable()
 export class ProfileService {
   constructor(private httpService: HttpService) {}
 
-  async createProfile(aboutDto: any, params: any, token: string) {
+  async createProfile(aboutDto: any, params: any, req: Request) {
     try {
+      const token = req.headers.authorization?.split(' ')[1];
       const data = this.httpService
         .post(`${process.env.SVC_DB_PROFILE}/api/v1/profile`, aboutDto, {
           params,
+          headers: {
+            Authorization: `Bearer ${token}`, // Include bearer token in the headers
+          },
         })
         .pipe(
           map((response) => response.data),
@@ -31,8 +36,9 @@ export class ProfileService {
     }
   }
 
-  async getProfile(params: any, token: string) {
+  async getProfile(params: any, req: Request) {
     try {
+      const token = req.headers.authorization?.split(' ')[1];
       const data = this.httpService
         .get(`${process.env.SVC_DB_PROFILE}/api/v1/profile`, {
           params,
@@ -59,11 +65,15 @@ export class ProfileService {
     }
   }
 
-  async interest(dto: any, params: any, token: string) {
+  async interest(dto: any, params: any, req: Request) {
     try {
+      const token = req.headers.authorization?.split(' ')[1];
       const data = this.httpService
         .post(`${process.env.SVC_DB_PROFILE}/api/v1/profile/interest`, dto, {
           params,
+          headers: {
+            Authorization: `Bearer ${token}`, // Include bearer token in the headers
+          },
         })
         .pipe(
           map((response) => response.data),

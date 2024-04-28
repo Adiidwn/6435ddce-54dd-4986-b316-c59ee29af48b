@@ -17,12 +17,15 @@ let ProfileService = class ProfileService {
     constructor(httpService) {
         this.httpService = httpService;
     }
-    async createProfile(aboutDto, params, token) {
+    async createProfile(aboutDto, params, req) {
         try {
-            console.log('params', params);
+            const token = req.headers.authorization?.split(' ')[1];
             const data = this.httpService
                 .post(`${process.env.SVC_DB_PROFILE}/api/v1/profile`, aboutDto, {
                 params,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             })
                 .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
                 throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
@@ -34,8 +37,9 @@ let ProfileService = class ProfileService {
             throw new common_1.HttpException(`${error.response.statusText} : ${error.response.data?.errorMessage}`, error.response.status);
         }
     }
-    async getProfile(params, token) {
+    async getProfile(params, req) {
         try {
+            const token = req.headers.authorization?.split(' ')[1];
             const data = this.httpService
                 .get(`${process.env.SVC_DB_PROFILE}/api/v1/profile`, {
                 params,
@@ -53,12 +57,15 @@ let ProfileService = class ProfileService {
             throw new common_1.HttpException(`${error.response.statusText} : ${error.response.data?.errorMessage}`, error.response.status);
         }
     }
-    async interest(dto, params, token) {
+    async interest(dto, params, req) {
         try {
-            console.log('params', params);
+            const token = req.headers.authorization?.split(' ')[1];
             const data = this.httpService
                 .post(`${process.env.SVC_DB_PROFILE}/api/v1/profile/interest`, dto, {
                 params,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             })
                 .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
                 throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
