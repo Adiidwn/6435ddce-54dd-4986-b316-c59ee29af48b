@@ -1,18 +1,13 @@
-import {
-  HttpCode,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
+import axios from 'axios';
 import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
-import { AuthLoginDto, AuthRegisterDto } from 'src/dto/auth.dto';
+import * as jwt from 'jsonwebtoken';
+import { AuthLoginDto, AuthRegisterDto, AuthUpdateDto } from 'src/dto/auth.dto';
 import { QueryParams } from 'src/dto/request.dto';
 import { PrismaService } from 'src/prisma.service';
-import axios from 'axios';
-import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -23,8 +18,6 @@ export class AuthService {
 
   async register(registerDto: AuthRegisterDto) {
     try {
-      console.log('registerDto', registerDto);
-
       const saltRounds = 10;
 
       const checkEmail = await this.prisma.user.findFirst({
@@ -40,7 +33,6 @@ export class AuthService {
         registerDto.password,
         saltRounds,
       );
-      console.log('bcryptPassword', bcryptPassword);
       const user = await this.prisma.user.create({
         data: {
           name: registerDto.name,
@@ -48,7 +40,6 @@ export class AuthService {
           password: bcryptPassword,
         },
       });
-      console.log('user', user);
 
       if (!user) {
         throw new Error('Failed to create user');
@@ -109,8 +100,6 @@ export class AuthService {
         },
       }),
     ]);
-    console.log('datas', datas);
-    console.log('params', params);
 
     return {
       datas,
@@ -136,7 +125,6 @@ export class AuthService {
         authLoginDto.password,
         checkEmail.password,
       );
-      console.log('passwordMatch', passwordMatch);
 
       if (!passwordMatch) {
         throw new Error('Invalid email or password');
@@ -144,7 +132,7 @@ export class AuthService {
 
       const payload = {
         id: checkEmail.id,
-        email: checkEmail.email.split('@')[0],
+        email: checkEmail.email,
         name: checkEmail.name,
         role: checkEmail.role,
       };
@@ -173,9 +161,6 @@ export class AuthService {
         payload;
       };
       const userId = compare.payload.id;
-      const id = compare.payload.id;
-      console.log('compare', compare);
-      console.log('userId', userId);
 
       const user = await this.prisma.user.findFirst({
         where: {
@@ -202,50 +187,62 @@ export class AuthService {
         expiresAt: new Date(),
       },
     });
-    console.log('blackListToken', blackListToken);
 
     return blackListToken;
   }
 
-  async updateUser(
-    updateDTO: AuthRegisterDto,
-    params: QueryParams,
-    req: Request,
-  ): Promise<User> {
-    const user = req['user'];
-    console.log('user', user);
+  async updateUser(updateDTO: AuthUpdateDto, params: QueryParams, req: any) {
+    try {
+      const token = req.header('Authorization')?.replace('Bearer ', ''); // Use optional chaining
+      if (!token) {
+        console.error('Token is missing or invalid.');
+      }
 
-    if (user.id !== params.user_id) {
-      throw new UnauthorizedException('unknown user');
-    }
+      const compare = jwt.verify(token, process.env.JWT_SECRET) as {
+        payload: { email: string };
+      };
+      const email = compare.payload.email;
+      if (email !== params.email) console.log('email', email);
 
-    const arrQuery = [];
-    if (params.user_id) {
-      arrQuery.push({
-        id: params.user_id,
+      const arrQuery = [];
+      if (params.user_id) {
+        arrQuery.push({
+          id: params.user_id,
+        });
+      }
+
+      if (params.email) {
+        arrQuery.push({
+          email: params.email,
+        });
+      }
+
+      const userData = await this.prisma.user.findFirst({
+        where: {
+          AND: arrQuery,
+        },
       });
+
+      if (updateDTO.name) {
+        userData.name = updateDTO.name;
+      }
+
+      if (updateDTO.password) {
+        userData.password = updateDTO.password;
+      }
+
+      const update = await this.prisma.user.update({
+        where: { email: userData.email },
+        data: {
+          name: updateDTO.name,
+          password: updateDTO.password,
+        },
+      });
+
+      return update;
+    } catch (error) {
+      throw error;
     }
-
-    if (!user) {
-      throw new UnauthorizedException('unknown user');
-    }
-    console.log('arrQuery', arrQuery);
-    console.log('params.user_id', params.user_id);
-
-    const userData = await this.prisma.user.findFirst({
-      where: {
-        AND: arrQuery,
-      },
-    });
-
-    userData.name = updateDTO.name;
-    userData.email = updateDTO.email;
-    userData.password = updateDTO.password;
-
-    return this.prisma.user.update({
-      where: { id: user.id },
-      data: userData,
-    });
   }
 
   async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {

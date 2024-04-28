@@ -23,6 +23,12 @@ export class QueryParams {
   @ApiProperty({ required: false })
   username?: string = '';
 
+  @Type(() => String)
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ required: false })
+  email?: string = '';
+
   @Type(() => Number)
   @IsOptional()
   @IsString()

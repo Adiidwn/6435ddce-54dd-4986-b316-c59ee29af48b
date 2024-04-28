@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { AuthLoginDto, AuthRegisterDto } from 'src/dto/auth.dto';
+import { AuthLoginDto, AuthRegisterDto, AuthUpdateDto } from 'src/dto/auth.dto';
 import { QueryParams } from 'src/dto/request.dto';
 import { AuthService } from './auth.service';
 
@@ -66,16 +66,12 @@ export class AuthController {
     return res.status(HttpStatus.OK).json(data);
   }
 
-  @Post('/updateUser')
+  @Post('/update')
   async updateUser(
-    @Body() authDto: AuthRegisterDto,
+    @Body() authDto: AuthUpdateDto,
     @Query() params: QueryParams,
     @Req() req: Request,
   ) {
-    const data = await this.authService.updateUser(authDto, params, req);
-    return {
-      data,
-      statusCode: HttpStatus.OK,
-    };
+    return this.authService.updateUser(authDto, params, req);
   }
 }

@@ -1,7 +1,7 @@
 import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
 import { Request, Response } from 'express';
-import { AuthLoginDto, AuthRegisterDto } from 'src/dto/auth.dto';
+import { AuthLoginDto, AuthRegisterDto, AuthUpdateDto } from 'src/dto/auth.dto';
 import { QueryParams } from 'src/dto/request.dto';
 import { PrismaService } from 'src/prisma.service';
 export declare class AuthService {
@@ -48,6 +48,14 @@ export declare class AuthService {
         token: string;
         expiresAt: Date;
     }>;
-    updateUser(updateDTO: AuthRegisterDto, params: QueryParams, req: Request): Promise<User>;
+    updateUser(updateDTO: AuthUpdateDto, params: QueryParams, req: any): Promise<{
+        id: string;
+        email: string;
+        name: string;
+        password: string;
+        role: import(".prisma/client").$Enums.UserRole;
+        ceatedAt: Date;
+        chat_id: string;
+    }>;
     deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User>;
 }

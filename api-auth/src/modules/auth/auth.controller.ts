@@ -9,7 +9,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { AuthLoginDto, AuthRegisterDto } from 'src/dto/auth.dto';
+import { AuthLoginDto, AuthRegisterDto, AuthUpdateDto } from 'src/dto/auth.dto';
 import { QueryParams } from 'src/dto/request.dto';
 import { SUCCESS_STATUS } from 'src/utils/response.constant';
 import { AuthService } from './auth.service';
@@ -40,7 +40,6 @@ export class AuthController {
     @Res() res: Response,
   ) {
     try {
-      console.log('authRegisterDto', authRegisterDto);
       const register = await this.authService.register(authRegisterDto);
 
       return res.status(HttpStatus.OK).json({
@@ -128,14 +127,13 @@ export class AuthController {
 
   @Post('/update')
   async updateUser(
-    @Body() authDto: AuthRegisterDto,
+    @Body() authDto: AuthUpdateDto,
     @Query() params: QueryParams,
     @Req() req: Request,
   ) {
     try {
-      const user = req;
-      console.log('user', user);
-      console.log('reqUser', req['user']);
+      const user = await this.authService.authCheck(params, req);
+
       if (!user) {
         return 'Unauthorized';
       }
@@ -145,7 +143,7 @@ export class AuthController {
         params,
         req,
       );
-      console.log('updateUser controller:', updateUser);
+
       return {
         data: updateUser,
         statusCode: HttpStatus.OK,

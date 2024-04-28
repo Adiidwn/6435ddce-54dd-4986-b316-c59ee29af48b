@@ -43,11 +43,7 @@ let AuthController = class AuthController {
         return res.status(common_1.HttpStatus.OK).json(data);
     }
     async updateUser(authDto, params, req) {
-        const data = await this.authService.updateUser(authDto, params, req);
-        return {
-            data,
-            statusCode: common_1.HttpStatus.OK,
-        };
+        return this.authService.updateUser(authDto, params, req);
     }
 };
 exports.AuthController = AuthController;
@@ -95,12 +91,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 __decorate([
-    (0, common_1.Post)('/updateUser'),
+    (0, common_1.Post)('/update'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Query)()),
     __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [auth_dto_1.AuthRegisterDto,
+    __metadata("design:paramtypes", [auth_dto_1.AuthUpdateDto,
         request_dto_1.QueryParams, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "updateUser", null);

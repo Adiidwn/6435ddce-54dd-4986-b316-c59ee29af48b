@@ -2,6 +2,7 @@ import { SortOrder } from 'src/utils/response.constant';
 export declare class QueryParams {
     user_id?: string;
     username?: string;
+    email?: string;
     author_id?: number;
     order_by?: string;
     page?: number;

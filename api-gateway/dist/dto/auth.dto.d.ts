@@ -7,3 +7,7 @@ export declare class AuthRegisterDto {
     password: string;
     email: string;
 }
+export declare class AuthUpdateDto {
+    name: string;
+    password: string;
+}

@@ -8,8 +8,6 @@ export class ProfileService {
 
   async createProfile(aboutDto: any, params: any, token: string) {
     try {
-      console.log('params', params);
-
       const data = this.httpService
         .post(`${process.env.SVC_DB_PROFILE}/api/v1/profile`, aboutDto, {
           params,
@@ -63,8 +61,6 @@ export class ProfileService {
 
   async interest(dto: any, params: any, token: string) {
     try {
-      console.log('params', params);
-
       const data = this.httpService
         .post(`${process.env.SVC_DB_PROFILE}/api/v1/profile/interest`, dto, {
           params,

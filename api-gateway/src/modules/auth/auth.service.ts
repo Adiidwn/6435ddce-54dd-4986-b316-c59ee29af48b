@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, Injectable } from '@nestjs/common';
 import { catchError, map } from 'rxjs';
-import { AuthRegisterDto } from 'src/dto/auth.dto';
+import { AuthUpdateDto } from 'src/dto/auth.dto';
 import { QueryParams } from 'src/dto/request.dto';
 
 @Injectable()
@@ -140,20 +140,17 @@ export class AuthService {
     }
   }
 
-  async updateUser(updateDTO: AuthRegisterDto, params: QueryParams, req: any) {
+  async updateUser(updateDTO: AuthUpdateDto, params: QueryParams, req: any) {
     try {
       const tokenn = req.headers.authorization?.split(' ')[1];
 
       const data = await this.httpService
-        .post(
-          `${process.env.SVC_DB_AUTH}/api/v1/auth/update?user_id=${params}`,
-          updateDTO,
-          {
-            headers: {
-              Authorization: `Bearer ${tokenn}`, // Include bearer token in the headers
-            },
+        .post(`${process.env.SVC_DB_AUTH}/api/v1/auth/update`, updateDTO, {
+          params: params,
+          headers: {
+            Authorization: `Bearer ${tokenn}`, // Include bearer token in the headers
           },
-        )
+        })
         .pipe(
           map((response) => response.data),
           catchError((e) => {

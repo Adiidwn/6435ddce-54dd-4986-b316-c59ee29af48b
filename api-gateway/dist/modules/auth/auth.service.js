@@ -105,8 +105,13 @@ let AuthService = class AuthService {
     async updateUser(updateDTO, params, req) {
         try {
             const tokenn = req.headers.authorization?.split(' ')[1];
+            console.log('tokenn', tokenn);
+            console.log('updateDTO', updateDTO);
+            console.log('params', params);
+            console.log(`${process.env.SVC_DB_AUTH}/api/v1/auth/update?email=${params}`, params);
             const data = await this.httpService
-                .post(`${process.env.SVC_DB_AUTH}/api/v1/auth/update?user_id=${params}`, updateDTO, {
+                .post(`${process.env.SVC_DB_AUTH}/api/v1/auth/update`, updateDTO, {
+                params: params,
                 headers: {
                     Authorization: `Bearer ${tokenn}`,
                 },

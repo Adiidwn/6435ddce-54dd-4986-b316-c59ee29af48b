@@ -18,6 +18,7 @@ class QueryParams {
     constructor(keyword = '', page = 1, sort = response_constant_1.SortOrder.DESC, order_by = 'created_at') {
         this.user_id = '';
         this.username = '';
+        this.email = '';
         this.order_by = 'created_at';
         this.page = 1;
         this.per_page = 10;
@@ -45,6 +46,13 @@ __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     __metadata("design:type", String)
 ], QueryParams.prototype, "username", void 0);
+__decorate([
+    (0, class_transformer_1.Type)(() => String),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)({ required: false }),
+    __metadata("design:type", String)
+], QueryParams.prototype, "email", void 0);
 __decorate([
     (0, class_transformer_1.Type)(() => Number),
     (0, class_validator_1.IsOptional)(),

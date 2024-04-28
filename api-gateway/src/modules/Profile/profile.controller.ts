@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Header,
-  Headers,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
 import { AboutDto } from 'src/dto/about.dto';
 import { QueryParams } from 'src/dto/request.dto';
 import { ProfileService } from './profile.service';
@@ -40,8 +32,6 @@ export class ProfileController {
     @Headers() token: string,
   ) {
     try {
-      console.log('params', params);
-
       return await this.postService.interest(dto, params, token);
     } catch (error) {
       throw error;

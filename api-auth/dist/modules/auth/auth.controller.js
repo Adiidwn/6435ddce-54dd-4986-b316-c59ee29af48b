@@ -38,7 +38,6 @@ let AuthController = class AuthController {
     }
     async register(authRegisterDto, res) {
         try {
-            console.log('authRegisterDto', authRegisterDto);
             const register = await this.authService.register(authRegisterDto);
             return res.status(common_1.HttpStatus.OK).json({
                 data: register,
@@ -116,14 +115,11 @@ let AuthController = class AuthController {
     }
     async updateUser(authDto, params, req) {
         try {
-            const user = req;
-            console.log('user', user);
-            console.log('reqUser', req['user']);
+            const user = await this.authService.authCheck(params, req);
             if (!user) {
                 return 'Unauthorized';
             }
             const updateUser = await this.authService.updateUser(authDto, params, req);
-            console.log('updateUser controller:', updateUser);
             return {
                 data: updateUser,
                 statusCode: common_1.HttpStatus.OK,
@@ -183,7 +179,7 @@ __decorate([
     __param(1, (0, common_1.Query)()),
     __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [auth_dto_1.AuthRegisterDto,
+    __metadata("design:paramtypes", [auth_dto_1.AuthUpdateDto,
         request_dto_1.QueryParams, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "updateUser", null);

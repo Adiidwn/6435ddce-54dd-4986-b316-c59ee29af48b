@@ -18,3 +18,11 @@ export class AuthRegisterDto {
   @IsEmail()
   email: string;
 }
+
+export class AuthUpdateDto {
+  @IsNotEmpty()
+  name: string;
+
+  @IsNotEmpty()
+  password: string;
+}
