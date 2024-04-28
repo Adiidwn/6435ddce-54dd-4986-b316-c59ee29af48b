@@ -20,7 +20,7 @@ export class AuthController {
 
   @Post('/login')
   async login(@Body() authLoginDto: AuthLoginDto, @Res() res: Response) {
-    const login = await this.authService.login(authLoginDto);
+    const login = await this.authService.login(authLoginDto, res);
     if (!login) {
       return res.status(HttpStatus.UNAUTHORIZED).json({
         statusCode: HttpStatus.UNAUTHORIZED,
@@ -57,11 +57,13 @@ export class AuthController {
   }
 
   @Get('/getProfile')
-  async getProfile(@Req() req: Request, @Res() res: Response) {
+  async getProfile(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() params: QueryParams,
+  ) {
     try {
-      console.log('req user', req.headers['authorization'].split(' ')[1]);
-
-      const authCheck = await this.authService.authCheck(req);
+      const authCheck = await this.authService.authCheck(params, req);
       return res.status(HttpStatus.OK).json({
         data: authCheck,
         statusCode: HttpStatus.OK,
@@ -124,17 +126,20 @@ export class AuthController {
     }
   }
 
-  @Post('/updateUser')
+  @Post('/update')
   async updateUser(
     @Body() authDto: AuthRegisterDto,
     @Query() params: QueryParams,
     @Req() req: Request,
   ) {
     try {
-      const user = req['user'];
+      const user = req;
+      console.log('user', user);
+      console.log('reqUser', req['user']);
       if (!user) {
         return 'Unauthorized';
       }
+
       const updateUser = await this.authService.updateUser(
         authDto,
         params,

@@ -23,7 +23,7 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     async login(authLoginDto, res) {
-        const login = await this.authService.login(authLoginDto);
+        const login = await this.authService.login(authLoginDto, res);
         if (!login) {
             return res.status(common_1.HttpStatus.UNAUTHORIZED).json({
                 statusCode: common_1.HttpStatus.UNAUTHORIZED,
@@ -53,10 +53,9 @@ let AuthController = class AuthController {
             });
         }
     }
-    async getProfile(req, res) {
+    async getProfile(req, res, params) {
         try {
-            console.log('req user', req.headers['authorization'].split(' ')[1]);
-            const authCheck = await this.authService.authCheck(req);
+            const authCheck = await this.authService.authCheck(params, req);
             return res.status(common_1.HttpStatus.OK).json({
                 data: authCheck,
                 statusCode: common_1.HttpStatus.OK,
@@ -117,7 +116,9 @@ let AuthController = class AuthController {
     }
     async updateUser(authDto, params, req) {
         try {
-            const user = req['user'];
+            const user = req;
+            console.log('user', user);
+            console.log('reqUser', req['user']);
             if (!user) {
                 return 'Unauthorized';
             }
@@ -155,8 +156,9 @@ __decorate([
     (0, common_1.Get)('/getProfile'),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Res)()),
+    __param(2, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, Object, request_dto_1.QueryParams]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getProfile", null);
 __decorate([
@@ -176,7 +178,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 __decorate([
-    (0, common_1.Post)('/updateUser'),
+    (0, common_1.Post)('/update'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Query)()),
     __param(2, (0, common_1.Req)()),

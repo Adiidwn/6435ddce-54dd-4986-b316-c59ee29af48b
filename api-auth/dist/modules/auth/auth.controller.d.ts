@@ -7,7 +7,7 @@ export declare class AuthController {
     constructor(authService: AuthService);
     login(authLoginDto: AuthLoginDto, res: Response): Promise<Response<any, Record<string, any>>>;
     register(authRegisterDto: AuthRegisterDto, res: Response): Promise<Response<any, Record<string, any>>>;
-    getProfile(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
+    getProfile(req: Request, res: Response, params: QueryParams): Promise<Response<any, Record<string, any>>>;
     findAll(res: Response, params: QueryParams): Promise<Response<any, Record<string, any>>>;
     logout(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
     updateUser(authDto: AuthRegisterDto, params: QueryParams, req: Request): Promise<any>;

@@ -27,30 +27,24 @@ export class AuthController {
   ) {
     const data = await this.authService.register(authRegisterDto);
 
-    return res.status(HttpStatus.OK).json({
-      data,
-    });
+    return res.status(HttpStatus.OK).json(data);
   }
 
   @Post('/login')
   async login(@Body() authLoginDto: AuthLoginDto, @Res() res: Response) {
     const data = await this.authService.login(authLoginDto);
-    return res.status(HttpStatus.OK).json({
-      data,
-    });
+    return res.status(HttpStatus.OK).json(data);
   }
 
-  // @Get('/getProfile')
-  // async getProfile(
-  //   @Req() req: Request,
-  //   @Res() res: Response,
-  //   @Headers() token: string,
-  // ) {
-  //   const data = await this.authService.authCheck(token);
-  //   return res.status(HttpStatus.OK).json({
-  //     data,
-  //   });
-  // }
+  @Get('/getProfile')
+  async getProfile(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Headers() token: string,
+  ) {
+    const data = await this.authService.authCheck(req, token);
+    return res.status(HttpStatus.OK).json(data);
+  }
 
   @Get('/')
   async findAll(
@@ -59,29 +53,29 @@ export class AuthController {
     @Headers() token: string,
   ) {
     const data = await this.authService.findAll(params, token);
-    return res.status(HttpStatus.OK).json({
-      data,
-    });
+    return res.status(HttpStatus.OK).json(data);
   }
 
-  // @Post('/logout')
-  // async logout(@Req() req: Request, @Res() res: Response) {
-  //   const data = await this.authService.logout(req, res);
-  //   return res.status(HttpStatus.OK).json({
-  //     data,
-  //   });
-  // }
+  @Post('/logout')
+  async logout(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Headers() token: string,
+  ) {
+    const data = await this.authService.logout(req);
+    return res.status(HttpStatus.OK).json(data);
+  }
 
-  // @Post('/updateUser')
-  // async updateUser(
-  //   @Body() authDto: AuthRegisterDto,
-  //   @Query() params: QueryParams,
-  //   @Req() req: Request,
-  // ) {
-  //   const data = await this.authService.updateUser(authDto, params, req);
-  //   return {
-  //     data,
-  //     statusCode: HttpStatus.OK,
-  //   };
-  // }
+  @Post('/updateUser')
+  async updateUser(
+    @Body() authDto: AuthRegisterDto,
+    @Query() params: QueryParams,
+    @Req() req: Request,
+  ) {
+    const data = await this.authService.updateUser(authDto, params, req);
+    return {
+      data,
+      statusCode: HttpStatus.OK,
+    };
+  }
 }

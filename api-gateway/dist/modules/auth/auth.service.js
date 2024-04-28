@@ -28,7 +28,7 @@ let AuthService = class AuthService {
             return data;
         }
         catch (error) {
-            throw error;
+            throw new common_1.HttpException(`${error.response.statusText} : ${error.response.data?.errorMessage}`, error.response.status);
         }
     }
     async findAll(params, token) {
@@ -53,7 +53,7 @@ let AuthService = class AuthService {
     async login(authLoginDto) {
         try {
             const data = await this.httpService
-                .post(`http://localhost:3000/api/v1/auth/login`, authLoginDto)
+                .post(`${process.env.SVC_DB_AUTH}/api/v1/auth/login`, authLoginDto)
                 .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
                 throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
             }))
@@ -61,15 +61,54 @@ let AuthService = class AuthService {
             return data;
         }
         catch (error) {
-            throw error;
+            throw new common_1.HttpException(`${error.response.statusText} : ${error.response.data?.errorMessage}`, error.response.status);
         }
     }
-    async authCheck(token) {
+    async authCheck(req, token) {
         try {
+            const tokenn = req.headers.authorization?.split(' ')[1];
             const data = await this.httpService
                 .get(`${process.env.SVC_DB_AUTH}/api/v1/auth/getProfile`, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${tokenn}`,
+                },
+            })
+                .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
+                throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
+            }))
+                .toPromise();
+            return data;
+        }
+        catch (error) {
+            throw new common_1.HttpException(`${error.response.statusText} : ${error.response.data?.errorMessage}`, error.response.status);
+        }
+    }
+    async logout(req) {
+        try {
+            const tokenn = req.headers.authorization?.split(' ')[1];
+            const data = await this.httpService
+                .post(`${process.env.SVC_DB_AUTH}/api/v1/auth/logout`, tokenn, {
+                headers: {
+                    Authorization: `Bearer ${tokenn}`,
+                },
+            })
+                .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {
+                throw new common_1.HttpException(`${e.response.statusText} : ${e.response.data?.errorMessage}`, e.response.status);
+            }))
+                .toPromise();
+            return data;
+        }
+        catch (error) {
+            throw new common_1.HttpException(`${error.response.statusText} : ${error.response.data?.errorMessage}`, error.response.status);
+        }
+    }
+    async updateUser(updateDTO, params, req) {
+        try {
+            const tokenn = req.headers.authorization?.split(' ')[1];
+            const data = await this.httpService
+                .post(`${process.env.SVC_DB_AUTH}/api/v1/auth/update?user_id=${params}`, updateDTO, {
+                headers: {
+                    Authorization: `Bearer ${tokenn}`,
                 },
             })
                 .pipe((0, rxjs_1.map)((response) => response.data), (0, rxjs_1.catchError)((e) => {

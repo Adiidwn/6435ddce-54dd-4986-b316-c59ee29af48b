@@ -15,6 +15,7 @@ const jwt_1 = require("@nestjs/jwt");
 const bcrypt = require("bcrypt");
 const prisma_service_1 = require("../../prisma.service");
 const axios_1 = require("axios");
+const jwt = require("jsonwebtoken");
 let AuthService = class AuthService {
     constructor(prisma, jwtService) {
         this.prisma = prisma;
@@ -32,7 +33,6 @@ let AuthService = class AuthService {
             if (checkEmail) {
                 throw new Error('Email already exists');
             }
-            console.log('asdasd');
             const bcryptPassword = await bcrypt.hash(registerDto.password, saltRounds);
             console.log('bcryptPassword', bcryptPassword);
             const user = await this.prisma.user.create({
@@ -70,9 +70,7 @@ let AuthService = class AuthService {
         const take = params.per_page;
         if (params.username) {
             QueryArr.push({
-                name: {
-                    contains: params.username,
-                },
+                name: params.username,
             });
         }
         const [total_data, datas] = await this.prisma.$transaction([
@@ -106,7 +104,7 @@ let AuthService = class AuthService {
             total_data,
         };
     }
-    async login(authLoginDto) {
+    async login(authLoginDto, res) {
         try {
             const checkEmail = await this.prisma.user.findFirst({
                 where: {
@@ -114,12 +112,10 @@ let AuthService = class AuthService {
                 },
             });
             if (!checkEmail) {
-                return {
-                    user: null,
-                    access_token: 'Error Email / password is wrong',
-                };
+                return res.status(common_1.HttpStatus.UNAUTHORIZED).json({
+                    message: 'Invalid email or password',
+                });
             }
-            console.log('checkEmail', checkEmail);
             const passwordMatch = await bcrypt.compare(authLoginDto.password, checkEmail.password);
             console.log('passwordMatch', passwordMatch);
             if (!passwordMatch) {
@@ -141,13 +137,20 @@ let AuthService = class AuthService {
             throw new Error(e);
         }
     }
-    async authCheck(req) {
+    async authCheck(params, req) {
         try {
-            const loginSession = req['user'];
-            console.log('loginSession', loginSession);
+            const token = req.header('Authorization')?.replace('Bearer ', '');
+            if (!token) {
+                console.error('Token is missing or invalid.');
+            }
+            const compare = jwt.verify(token, process.env.JWT_SECRET);
+            const userId = compare.payload.id;
+            const id = compare.payload.id;
+            console.log('compare', compare);
+            console.log('userId', userId);
             const user = await this.prisma.user.findFirst({
                 where: {
-                    id: loginSession.id,
+                    id: userId,
                 },
                 select: {
                     id: true,
@@ -169,14 +172,12 @@ let AuthService = class AuthService {
                 expiresAt: new Date(),
             },
         });
-        return {
-            statusCode: common_1.HttpStatus.OK,
-            acess_token: blackListToken,
-            message: 'Logout successful',
-        };
+        console.log('blackListToken', blackListToken);
+        return blackListToken;
     }
     async updateUser(updateDTO, params, req) {
         const user = req['user'];
+        console.log('user', user);
         if (user.id !== params.user_id) {
             throw new common_1.UnauthorizedException('unknown user');
         }
@@ -189,6 +190,8 @@ let AuthService = class AuthService {
         if (!user) {
             throw new common_1.UnauthorizedException('unknown user');
         }
+        console.log('arrQuery', arrQuery);
+        console.log('params.user_id', params.user_id);
         const userData = await this.prisma.user.findFirst({
             where: {
                 AND: arrQuery,

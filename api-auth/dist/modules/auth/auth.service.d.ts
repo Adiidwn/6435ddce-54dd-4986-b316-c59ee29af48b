@@ -1,4 +1,3 @@
-import { HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
 import { Request, Response } from 'express';
@@ -29,11 +28,7 @@ export declare class AuthService {
         }[];
         total_data: number;
     }>;
-    login(authLoginDto: AuthLoginDto): Promise<{
-        user: any;
-        access_token: string;
-        payload?: undefined;
-    } | {
+    login(authLoginDto: AuthLoginDto, res: Response): Promise<Response<any, Record<string, any>> | {
         payload: {
             id: string;
             email: string;
@@ -41,22 +36,17 @@ export declare class AuthService {
             role: import(".prisma/client").$Enums.UserRole;
         };
         access_token: string;
-        user?: undefined;
     }>;
-    authCheck(req: Request): Promise<{
+    authCheck(params: QueryParams, req: Request): Promise<{
         id: string;
         email: string;
         name: string;
         role: import(".prisma/client").$Enums.UserRole;
     }>;
     logout(req: Request, res: Response): Promise<{
-        statusCode: HttpStatus;
-        acess_token: {
-            id: string;
-            token: string;
-            expiresAt: Date;
-        };
-        message: string;
+        id: string;
+        token: string;
+        expiresAt: Date;
     }>;
     updateUser(updateDTO: AuthRegisterDto, params: QueryParams, req: Request): Promise<User>;
     deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User>;

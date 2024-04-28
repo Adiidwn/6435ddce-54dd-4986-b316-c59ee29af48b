@@ -1,6 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, Injectable } from '@nestjs/common';
 import { catchError, map } from 'rxjs';
+import { AuthRegisterDto } from 'src/dto/auth.dto';
+import { QueryParams } from 'src/dto/request.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +24,10 @@ export class AuthService {
         .toPromise();
       return data;
     } catch (error) {
-      throw error;
+      throw new HttpException(
+        `${error.response.statusText} : ${error.response.data?.errorMessage}`,
+        error.response.status,
+      );
     }
   }
 
@@ -57,7 +62,7 @@ export class AuthService {
   async login(authLoginDto: any) {
     try {
       const data = await this.httpService
-        .post(`http://localhost:3000/api/v1/auth/login`, authLoginDto)
+        .post(`${process.env.SVC_DB_AUTH}/api/v1/auth/login`, authLoginDto)
         .pipe(
           map((response) => response.data),
           catchError((e) => {
@@ -70,16 +75,21 @@ export class AuthService {
         .toPromise();
       return data;
     } catch (error) {
-      throw error;
+      throw new HttpException(
+        `${error.response.statusText} : ${error.response.data?.errorMessage}`,
+        error.response.status,
+      );
     }
   }
 
-  async authCheck(token: string) {
+  async authCheck(req: any, token: string) {
     try {
+      const tokenn = req.headers.authorization?.split(' ')[1];
+
       const data = await this.httpService
         .get(`${process.env.SVC_DB_AUTH}/api/v1/auth/getProfile`, {
           headers: {
-            Authorization: `Bearer ${token}`, // Include bearer token in the headers
+            Authorization: `Bearer ${tokenn}`, // Include bearer token in the headers
           },
         })
         .pipe(
@@ -101,57 +111,67 @@ export class AuthService {
     }
   }
 
-  // async logout(req: Request, res: Response) {
-  //   const blackListToken = await this.prisma.blacklistedToken.create({
-  //     data: {
-  //       token: req.header('Authorization').replace('Bearer ', ''),
-  //       expiresAt: new Date(),
-  //     },
-  //   });
+  async logout(req: any) {
+    try {
+      const tokenn = req.headers.authorization?.split(' ')[1];
 
-  //   return {
-  //     statusCode: HttpStatus.OK,
-  //     acess_token: blackListToken,
-  //     message: 'Logout successful',
-  //   };
-  // }
+      const data = await this.httpService
+        .post(`${process.env.SVC_DB_AUTH}/api/v1/auth/logout`, tokenn, {
+          headers: {
+            Authorization: `Bearer ${tokenn}`, // Include bearer token in the headers
+          },
+        })
+        .pipe(
+          map((response) => response.data),
+          catchError((e) => {
+            throw new HttpException(
+              `${e.response.statusText} : ${e.response.data?.errorMessage}`,
+              e.response.status,
+            );
+          }),
+        )
+        .toPromise();
+      return data;
+    } catch (error) {
+      throw new HttpException(
+        `${error.response.statusText} : ${error.response.data?.errorMessage}`,
+        error.response.status,
+      );
+    }
+  }
 
-  // async updateUser(
-  //   updateDTO: AuthRegisterDto,
-  //   params: QueryParams,
-  //   req: Request,
-  // ): Promise<User> {
-  //   const user = req['user'];
+  async updateUser(updateDTO: AuthRegisterDto, params: QueryParams, req: any) {
+    try {
+      const tokenn = req.headers.authorization?.split(' ')[1];
 
-  //   if (user.id !== params.user_id) {
-  //     throw new UnauthorizedException('unknown user');
-  //   }
-
-  //   const arrQuery = [];
-  //   if (params.user_id) {
-  //     arrQuery.push({
-  //       id: params.user_id,
-  //     });
-  //   }
-
-  //   if (!user) {
-  //     throw new UnauthorizedException('unknown user');
-  //   }
-  //   const userData = await this.prisma.user.findFirst({
-  //     where: {
-  //       AND: arrQuery,
-  //     },
-  //   });
-
-  //   userData.name = updateDTO.name;
-  //   userData.email = updateDTO.email;
-  //   userData.password = updateDTO.password;
-
-  //   return this.prisma.user.update({
-  //     where: { id: user.id },
-  //     data: userData,
-  //   });
-  // }
+      const data = await this.httpService
+        .post(
+          `${process.env.SVC_DB_AUTH}/api/v1/auth/update?user_id=${params}`,
+          updateDTO,
+          {
+            headers: {
+              Authorization: `Bearer ${tokenn}`, // Include bearer token in the headers
+            },
+          },
+        )
+        .pipe(
+          map((response) => response.data),
+          catchError((e) => {
+            throw new HttpException(
+              `${e.response.statusText} : ${e.response.data?.errorMessage}`,
+              e.response.status,
+            );
+          }),
+        )
+        .toPromise();
+      return data;
+    } catch (error) {
+      throw new HttpException(
+        `${error.response.statusText} : ${error.response.data?.errorMessage}`,
+        error.response.status,
+      );
+    }
+  }
 
   // async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
   //   return this.prisma.user.delete({ where });

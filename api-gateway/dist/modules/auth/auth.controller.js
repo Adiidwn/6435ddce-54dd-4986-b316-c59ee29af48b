@@ -24,21 +24,30 @@ let AuthController = class AuthController {
     }
     async register(authRegisterDto, res) {
         const data = await this.authService.register(authRegisterDto);
-        return res.status(common_1.HttpStatus.OK).json({
-            data,
-        });
+        return res.status(common_1.HttpStatus.OK).json(data);
     }
     async login(authLoginDto, res) {
         const data = await this.authService.login(authLoginDto);
-        return res.status(common_1.HttpStatus.OK).json({
-            data,
-        });
+        return res.status(common_1.HttpStatus.OK).json(data);
+    }
+    async getProfile(req, res, token) {
+        const data = await this.authService.authCheck(req, token);
+        return res.status(common_1.HttpStatus.OK).json(data);
     }
     async findAll(res, params, token) {
         const data = await this.authService.findAll(params, token);
-        return res.status(common_1.HttpStatus.OK).json({
+        return res.status(common_1.HttpStatus.OK).json(data);
+    }
+    async logout(req, res, token) {
+        const data = await this.authService.logout(req);
+        return res.status(common_1.HttpStatus.OK).json(data);
+    }
+    async updateUser(authDto, params, req) {
+        const data = await this.authService.updateUser(authDto, params, req);
+        return {
             data,
-        });
+            statusCode: common_1.HttpStatus.OK,
+        };
     }
 };
 exports.AuthController = AuthController;
@@ -59,6 +68,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
+    (0, common_1.Get)('/getProfile'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __param(2, (0, common_1.Headers)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "getProfile", null);
+__decorate([
     (0, common_1.Get)('/'),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Query)()),
@@ -67,6 +85,25 @@ __decorate([
     __metadata("design:paramtypes", [Object, request_dto_1.QueryParams, String]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Post)('/logout'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __param(2, (0, common_1.Headers)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
+__decorate([
+    (0, common_1.Post)('/updateUser'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Query)()),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [auth_dto_1.AuthRegisterDto,
+        request_dto_1.QueryParams, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "updateUser", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('auth'),
     (0, common_1.Controller)('auth'),
