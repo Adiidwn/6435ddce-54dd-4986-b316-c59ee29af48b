@@ -13,9 +13,11 @@ exports.ProfileService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt = require("jsonwebtoken");
 const prisma_service_1 = require("../../prisma.service");
+const rabbitmq_service_1 = require("../rabbitMq/rabbitmq.service");
 let ProfileService = class ProfileService {
-    constructor(prisma) {
+    constructor(prisma, rabbitMQService) {
         this.prisma = prisma;
+        this.rabbitMQService = rabbitMQService;
     }
     async createProfile(aboutDto, params, req) {
         const date = new Date(aboutDto.birthday);
@@ -115,12 +117,6 @@ let ProfileService = class ProfileService {
         if (!token) {
             console.error('Token is missing or invalid.');
         }
-        const compare = jwt.verify(token, process.env.JWT_SECRET);
-        console.log('compare', compare);
-        const userID = compare.payload.id;
-        if (userID !== params.userId) {
-            throw common_1.HttpStatus.UNAUTHORIZED;
-        }
         console.log('params', params.userId);
         const updateProfileData = {
             display_name: aboutDto.display_name,
@@ -133,6 +129,14 @@ let ProfileService = class ProfileService {
             image: aboutDto.image,
             authorId: params.userId,
         };
+        if (updateProfileData.gender !== '') {
+            const compare = jwt.verify(token, process.env.JWT_SECRET);
+            const userID = compare.payload.id;
+            console.log('compare', compare);
+            if (userID !== params.userId) {
+                throw common_1.HttpStatus.UNAUTHORIZED;
+            }
+        }
         const createProfile = await this.prisma.profile.upsert({
             where: {
                 authorId: params.userId,
@@ -140,6 +144,7 @@ let ProfileService = class ProfileService {
             update: updateProfileData,
             create: updateProfileData,
         });
+        await this.rabbitMQService.sendMessage('image-processing', createProfile);
         return createProfile;
     }
     async getProfile(params) {
@@ -251,6 +256,7 @@ let ProfileService = class ProfileService {
 exports.ProfileService = ProfileService;
 exports.ProfileService = ProfileService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        rabbitmq_service_1.RabbitMQService])
 ], ProfileService);
 //# sourceMappingURL=profile.service.js.map

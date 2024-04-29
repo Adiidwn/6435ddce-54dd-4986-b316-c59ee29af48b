@@ -8,7 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
-import { AuthGuard } from '../auth/auth.guard';
+import { AuthGuard } from '../auths/auth.guard';
 import { ChatService } from './chats.service';
 import { CreateChatDto } from 'src/dto/chat.dto';
 import { QueryParams } from 'src/dto/request.dto';

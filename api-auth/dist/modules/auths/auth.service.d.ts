@@ -15,7 +15,6 @@ export declare class AuthService {
         password: string;
         role: import(".prisma/client").$Enums.UserRole;
         ceatedAt: Date;
-        chat_id: string;
     }>;
     findAll(params: QueryParams): Promise<{
         datas: {
@@ -24,7 +23,6 @@ export declare class AuthService {
             name: string;
             role: import(".prisma/client").$Enums.UserRole;
             ceatedAt: Date;
-            chat_id: string;
         }[];
         total_data: number;
     }>;
@@ -55,7 +53,6 @@ export declare class AuthService {
         password: string;
         role: import(".prisma/client").$Enums.UserRole;
         ceatedAt: Date;
-        chat_id: string;
     }>;
     deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User>;
 }

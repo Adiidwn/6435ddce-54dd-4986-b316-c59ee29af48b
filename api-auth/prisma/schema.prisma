@@ -28,10 +28,10 @@ model BlacklistedToken {
 }
 
 model Message {
-  chat_id     String @id @default(auto()) @map("_id") @db.ObjectId
-  sender_id   String
-  receiver_id String
-  message     String
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  chat_id   String @db.ObjectId
+  sender_id String @db.ObjectId
+  message   String
 }
 
 model Chat {

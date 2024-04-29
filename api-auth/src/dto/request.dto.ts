@@ -27,6 +27,12 @@ export class QueryParams {
   @IsOptional()
   @IsString()
   @ApiProperty({ required: false })
+  chat_id?: string = '';
+
+  @Type(() => String)
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ required: false })
   email?: string = '';
 
   @Type(() => Number)

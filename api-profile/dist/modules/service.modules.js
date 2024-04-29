@@ -9,12 +9,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ServiceModules = void 0;
 const common_1 = require("@nestjs/common");
 const profile_module_1 = require("./Profile/profile.module");
+const rabbitmq_module_1 = require("./rabbitMq/rabbitmq.module");
 let ServiceModules = class ServiceModules {
 };
 exports.ServiceModules = ServiceModules;
 exports.ServiceModules = ServiceModules = __decorate([
     (0, common_1.Module)({
-        imports: [profile_module_1.ProfileModule],
+        imports: [profile_module_1.ProfileModule, rabbitmq_module_1.RabbitMQModule],
     })
 ], ServiceModules);
 //# sourceMappingURL=service.modules.js.map

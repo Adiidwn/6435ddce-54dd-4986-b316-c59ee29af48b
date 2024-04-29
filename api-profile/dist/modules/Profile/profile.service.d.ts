@@ -2,9 +2,11 @@ import { Request } from 'express';
 import { AboutDto } from 'src/dto/about.dto';
 import { QueryParams } from 'src/dto/request.dto';
 import { PrismaService } from 'src/prisma.service';
+import { RabbitMQService } from 'src/modules/rabbitMq/rabbitmq.service';
 export declare class ProfileService {
     private prisma;
-    constructor(prisma: PrismaService);
+    private readonly rabbitMQService;
+    constructor(prisma: PrismaService, rabbitMQService: RabbitMQService);
     createProfile(aboutDto: AboutDto, params: QueryParams, req: Request): Promise<{
         id: string;
         display_name: string;

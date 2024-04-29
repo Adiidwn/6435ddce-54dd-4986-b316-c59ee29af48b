@@ -7,7 +7,7 @@ import {
 import { JwtMiddleware } from './middlewares/logout';
 import { ServiceModules } from './modules/service.modules';
 import { PrismaService } from './prisma.service';
-import { AuthGuard } from './modules/auth/auth.guard';
+import { AuthGuard } from './modules/auths/auth.guard';
 
 @Module({
   imports: [ServiceModules],

@@ -4,10 +4,14 @@ import * as jwt from 'jsonwebtoken';
 import { AboutDto } from 'src/dto/about.dto';
 import { QueryParams } from 'src/dto/request.dto';
 import { PrismaService } from 'src/prisma.service';
+import { RabbitMQService } from 'src/modules/rabbitMq/rabbitmq.service';
 
 @Injectable()
 export class ProfileService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly rabbitMQService: RabbitMQService,
+  ) {}
 
   async createProfile(aboutDto: AboutDto, params: QueryParams, req: Request) {
     const date = new Date(aboutDto.birthday);
@@ -99,14 +103,7 @@ export class ProfileService {
       console.error('Token is missing or invalid.');
       // Handle the error or return an appropriate response
     }
-    const compare = jwt.verify(token, process.env.JWT_SECRET) as {
-      payload;
-    };
-    console.log('compare', compare);
-    const userID = compare.payload.id;
-    if (userID !== params.userId) {
-      throw HttpStatus.UNAUTHORIZED;
-    }
+
     console.log('params', params.userId);
 
     const updateProfileData = {
@@ -120,7 +117,16 @@ export class ProfileService {
       image: aboutDto.image,
       authorId: params.userId,
     };
-
+    if (updateProfileData.gender !== '') {
+      const compare = jwt.verify(token, process.env.JWT_SECRET) as {
+        payload;
+      };
+      const userID = compare.payload.id;
+      console.log('compare', compare);
+      if (userID !== params.userId) {
+        throw HttpStatus.UNAUTHORIZED;
+      }
+    }
     const createProfile = await this.prisma.profile.upsert({
       where: {
         authorId: params.userId,
@@ -128,7 +134,7 @@ export class ProfileService {
       update: updateProfileData,
       create: updateProfileData,
     });
-
+    await this.rabbitMQService.sendMessage('image-processing', createProfile);
     return createProfile;
   }
 

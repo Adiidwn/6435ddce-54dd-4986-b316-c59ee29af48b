@@ -92,7 +92,6 @@ export class AuthService {
           email: true,
           role: true,
           ceatedAt: true,
-          chat_id: true,
         },
         take,
         orderBy: {
