@@ -11,9 +11,13 @@ It is a chat on Nest.js((JWT+Local)), Socket.io , MongoDB ,Docker and rabbit mq 
 
 #Example installation steps if applicable
 git clone https://github.com/Adiidwn/6435ddce-54dd-4986-b316-c59ee29af48b/tree/main
+
 cd api-auth , 
+
 api-gateway, 
+
 api-profile 
+
 npm install
 //
 OR
