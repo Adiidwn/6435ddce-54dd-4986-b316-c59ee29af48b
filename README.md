@@ -10,7 +10,7 @@ It is a chat on Nest.js((JWT+Local)), Socket.io and MongoDB with rabbit mq with 
 4. Create message, Read messages by chat_id.
 
 #Example installation steps if applicable
-git clone https://github.com/Adiidwn/6435ddce-54dd-4986-b316-c59ee29af48b.git 
+git clone https://github.com/Adiidwn/6435ddce-54dd-4986-b316-c59ee29af48b/tree/main
 cd api-auth , 
 api-gateway, 
 api-profile 
