@@ -17,8 +17,6 @@ model User {
   password String
   role     UserRole @default(USER)
   ceatedAt DateTime @default(now())
-  chat     Chat?    @relation(fields: [chat_id], references: [id])
-  chat_id  String?
 
   @@map("users")
 }
@@ -30,14 +28,15 @@ model BlacklistedToken {
 }
 
 model Message {
-  chat_id    String @id @default(auto()) @map("_id") @db.ObjectId
-  sennder_id String
-  message    String
+  chat_id     String @id @default(auto()) @map("_id") @db.ObjectId
+  sender_id   String
+  receiver_id String
+  message     String
 }
 
 model Chat {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  user User[]
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  members String[] @db.ObjectId
 }
 
 enum UserRole {
