@@ -3,7 +3,7 @@ Project Name Backend Test [Short description or tagline about the project]
 Installation [Explain how to install the project. Include any dependencies and steps necessary to get started.]
 ## Description
 
-It is a chat on Nest.js((JWT+Local)), Socket.io and MongoDB with rabbit mq with gateway. You can:
+It is a chat on Nest.js((JWT+Local)), Socket.io and MongoDB with rabbit mq . You can:
 1. Login, Register, Check , find all users,logout,update Auth
 2. when register auto create profile , update profile,get profiles,create interest
 3. Create chat, Read chats by user_id.
