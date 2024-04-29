@@ -1,17 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
-import { AuthGuard } from '../auths/auth.guard';
-import { ChatService } from './chats.service';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateChatDto } from 'src/dto/chat.dto';
 import { QueryParams } from 'src/dto/request.dto';
+import { AuthGuard } from '../auths/auth.guard';
+import { ChatService } from './chats.service';
 
 @ApiTags('chats')
 @Controller('chats')
