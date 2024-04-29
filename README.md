@@ -19,9 +19,13 @@ api-gateway,
 api-profile 
 
 npm install
+
 //
+
 OR
+
 docker compose up
+
 use api-gateway port 
 
 connect to database
